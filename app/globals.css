@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+
+@theme {
+  --font-neue-haas: var(--font-neue-haas);
+}
+
+
+:root {
+  background-color: #020617; 
+  color: #f8fafc;
+}
