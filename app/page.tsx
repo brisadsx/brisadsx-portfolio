@@ -4,7 +4,7 @@ import Preloader from "../components/Preloader";
 import { motion, Variants } from "framer-motion";
 import { useState, useRef } from "react";
 
-// --- COMPONENTE: Link Encriptado ---
+
 const ScrambleLink = ({ href, children }: { href: string; children: string }) => {
   const [text, setText] = useState(children);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -52,25 +52,19 @@ const ScrambleLink = ({ href, children }: { href: string; children: string }) =>
   );
 };
 
+
 const chaoticDelays = [
-  2.0,  // B
-  1.2,  // r
-  2.4,  // i
-  1.6,  // s
-  2.8,  // a
-  1.0,  // 
-  1.9,  // G
-  1.4,  // a
-  2.2,  // b
-  1.3,  // r
-  2.6,  // i
-  1.7,  // e
-  1.8,  // l
-  2.9   // a
+  2.0, 1.2, 2.4, 1.6, 2.8, 1.0, 1.9, 1.4, 2.2, 1.3, 2.6, 1.7, 1.8, 2.9
+];
+const subtitleDelays = [
+  2.1, 1.5, 2.7, 1.2, 2.4, 1.8, 2.9, 1.4, 2.3, 1.7, 2.8, 1.6, 2.5, 1.9, 2.2
 ];
 
 export default function Home() {
   const title = "Brisa Gabriela";
+  
+  const subtitle1 = "this is under construction".match(/.{1,2}/g) || [];
+  const subtitle2 = "soon soon".match(/.{1,2}/g) || [];
 
   const container: Variants = {
     hidden: { opacity: 0 },
@@ -94,30 +88,23 @@ export default function Home() {
       
       <Preloader />
 
+     
       <motion.div 
-        className="absolute top-0 bottom-0 left-[35.333%] w-[1.5px] bg-[#FDCEDF] z-0"
+        className="absolute top-0 bottom-0 left-[35.555%] w-[1.9px] bg-[#FDCEDF] z-0 opacity-90"
         initial={{ scaleY: 0, transformOrigin: "top" }}
         animate={{ scaleY: 1 }}
-        transition={{ 
-          duration: 1.5, 
-          delay: 1.8, 
-          ease: [0.76, 0, 0.24, 1] 
-        }}
+        transition={{ duration: 1.5, delay: 1.8, ease: [0.76, 0, 0.24, 1] }}
       />
 
-   
+      
       <motion.div 
-        className="absolute left-0 right-0 top-[180px] h-[1.5px] bg-[#FDCEDF] z-0"
+        className="absolute left-0 right-0 top-[180px] h-[1.9px] bg-[#FDCEDF] z-0 opacity-90"
         initial={{ scaleX: 0, transformOrigin: "left" }}
         animate={{ scaleX: 1 }}
-        transition={{ 
-          duration: 1.5, 
-          delay: 1.8, 
-          ease: [0.76, 0, 0.24, 1] 
-        }}
+        transition={{ duration: 1.5, delay: 1.8, ease: [0.76, 0, 0.24, 1] }}
       />
-      {/* ------------------------------------- */}
 
+      
       <motion.nav 
         className="z-10 grid grid-cols-3 w-full items-start text-base md:text-[1.5rem] tracking-[0.2em] font-bold"
         initial={{ opacity: 0 }}
@@ -127,11 +114,9 @@ export default function Home() {
         <div className="flex justify-start tracking-tighter">
             <ScrambleLink href="#">brisadsx</ScrambleLink>
         </div>
-
         <div className="flex justify-center tracking-tighter">
             <ScrambleLink href="#">about</ScrambleLink>
         </div>
-
         <div className="flex justify-end gap-4 md:gap-8 tracking-tighter">
           <ScrambleLink href="#">in</ScrambleLink>
           <ScrambleLink href="#">ig</ScrambleLink>
@@ -139,9 +124,32 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      <div className="mt-auto flex flex-col items-start text-left">
+
+      <div className="absolute top-[200px] left-[33%] flex flex-col gap-1 text-[#FDCEDF] text-[1.5rem] tracking-tighter z-10">
+        
+        
+        <motion.div className="flex whitespace-pre" variants={container} initial="hidden" animate="visible">
+          {subtitle1.map((chunk, index) => (
+            <motion.span key={`sub1-${index}`} variants={letterVariants} custom={subtitleDelays[index]}>
+              {chunk}
+            </motion.span>
+          ))}
+        </motion.div>
+
+        <motion.div className="flex whitespace-pre" variants={container} initial="hidden" animate="visible">
+          {subtitle2.map((chunk, index) => (
+            <motion.span key={`sub2-${index}`} variants={letterVariants} custom={subtitleDelays[index]}>
+              {chunk}
+            </motion.span>
+          ))}
+        </motion.div>
+
+      </div>
+
+      
+      <div className="mt-auto flex flex-col items-start text-left z-10">
         <motion.h1
-          className="z-10 flex justify-start overflow-hidden text-[18vw] md:text-[17.3vw] font-bold tracking-tighter leading-none"
+          className="flex justify-start overflow-hidden text-[18vw] md:text-[17.3vw] font-bold tracking-tighter leading-none"
           variants={container}
           initial="hidden"
           animate="visible"
