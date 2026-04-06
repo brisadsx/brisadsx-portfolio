@@ -11,7 +11,7 @@ const neueHaas = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Brisa Gabriela - Creative Technologist",
+  title: "Brisa Gabriela | Creative Technologist",
   description: "",
 };
 
