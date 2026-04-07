@@ -47,10 +47,10 @@ const ScrambleLink = ({ href, target, underline, children, isDarkTheme }: { href
 };
 
 const chaoticDelays = [
-  2.0, 1.2, 2.4, 1.6, 2.8, 1.0, 1.9, 1.4, 2.2, 1.3, 2.6, 1.7, 1.8, 2.9
+  3.3, 2.5, 3.7, 2.9, 4.1, 2.3, 3.2, 2.7, 3.5, 2.6, 3.9, 3.0, 3.1, 4.2
 ];
 const subtitleDelays = [
-  2.1, 1.5, 2.7, 1.2, 2.4, 1.8, 2.9, 1.4, 2.3, 1.7, 2.8, 1.6, 2.5, 1.9, 2.2
+  3.4, 2.8, 4.0, 2.5, 3.7, 3.1, 4.2, 2.7, 3.6, 3.0, 4.1, 2.9, 3.8, 3.2, 3.5
 ];
 
 export default function Home() {
@@ -95,7 +95,7 @@ export default function Home() {
         className="fixed top-0 left-0 w-full pt-4 px-6 md:pt-6 md:px-10 z-40 grid grid-cols-3 items-start text-base md:text-[1.5rem] tracking-[0.2em] font-bold bg-transparent"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.4 }} 
+        transition={{ duration: 1, delay: 1.8 }} 
       >
         <div className="flex justify-start tracking-tighter">
             <ScrambleLink href="#" isDarkTheme={isDarkTheme}>brisadsx</ScrambleLink>
@@ -103,15 +103,12 @@ export default function Home() {
         
         <div className="flex justify-start items-center tracking-tighter relative">
             
-<button 
+            <button 
               onClick={() => setIsDarkTheme(!isDarkTheme)}
-            
-              className={`absolute -left-[20px] w-3.5 h-3.5 hover:rotate-90 transition-transform duration-300 ${isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#E11D48]/50"}`}
+              className={`absolute -left-[40px] w-3.5 h-3.5 hover:rotate-90 transition-transform duration-300 ${isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#E11D48]/50"}`}
               aria-label="Alternar tema oscuro/claro"
             />
             
-            {/* 2. Mueve SOLO LA PALABRA ABOUT */}
-            {/* Cambiá ml-[40px] por ml-[10px], ml-[80px], etc. Como el botón es invisible para esta palabra, podés ponerla donde quieras */}
             <div className="ml-[190px]">
                 <ScrambleLink href="#" isDarkTheme={isDarkTheme}>about</ScrambleLink>
             </div>
@@ -134,15 +131,15 @@ export default function Home() {
           </h1>
         </div>
 
-        {/* Línea Horizontal - Sombra solo en tema claro */}
+        {/* Línea Horizontal - Ajustada a 2.0s */}
         <motion.div 
           className={`absolute left-0 right-0 top-[190px] h-[1.9px] z-0 transition-all duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
           initial={{ scaleX: 0, transformOrigin: "left" }}
           animate={{ scaleX: 1 }}
-          transition={{ duration: 1.5, delay: 1.8, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: 1.5, delay: 2.0, ease: [0.76, 0, 0.24, 1] }} 
         />
 
-        {/* Textos Libres - Sombra solo en tema claro */}
+        {/* Textos Libres */}
         <div className={`absolute top-[200px] left-[33%] flex flex-col gap-1 text-[1.5rem] tracking-tighter z-10 transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}>
           <motion.div className="flex whitespace-pre" variants={container} initial="hidden" animate="visible">
             {subtitle1.map((chunk, index) => (
@@ -157,7 +154,7 @@ export default function Home() {
           </motion.div>
         </div>
         
-        {/* Tu Nombre - Sombra solo en tema claro */}
+        {/* Tu Nombre */}
         <div className="mt-auto flex flex-col items-start text-left z-10 pb-0 -mb-2">
           <motion.h1
             className={`flex justify-start overflow-hidden text-[18vw] md:text-[17.3vw] font-bold tracking-tighter leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
