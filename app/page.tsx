@@ -2,7 +2,8 @@
 
 import Preloader from "../components/Preloader";
 import { motion, Variants } from "framer-motion";
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
+import { useTheme } from "../context/ThemeContext";
 
 const ScrambleLink = ({ href, target, underline, children, isDarkTheme }: { href: string; target?: string; underline?: boolean; children: string; isDarkTheme?: boolean }) => {
   const [text, setText] = useState(children);
@@ -58,6 +59,8 @@ const scrollDelays = [
 ];
 
 export default function Home() {
+  const { isDarkTheme, toggleTheme } = useTheme(); 
+  
   const title = "Brisa Gabriela";
   
   const section2Lines = [
@@ -87,14 +90,12 @@ export default function Home() {
     }),
   };
 
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
-
   return (
     <main className={`relative flex flex-col overflow-x-hidden font-neue-haas transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B] text-[#FDCEDF]" : "bg-[#FAFAFA] text-[#E11D48]"}`}>
       
       <Preloader />
 
-      {/* --- SECCIÓN 1: INTOCABLE --- */}
+      {/* --- SECCIÓN 1: HERO (INTOCABLE) --- */}
       <motion.div 
         className={`fixed top-0 bottom-0 left-[35.333%] w-[2px] z-50 pointer-events-none transition-all duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
         initial={{ scaleY: 0, transformOrigin: "top" }}
@@ -114,7 +115,7 @@ export default function Home() {
         
         <div className="flex justify-start items-center tracking-tighter relative">
             <button 
-              onClick={() => setIsDarkTheme(!isDarkTheme)}
+              onClick={toggleTheme}
               className={`absolute -left-[40px] w-3.5 h-3.5 hover:rotate-90 transition-transform duration-300 ${isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#E11D48]/50"}`}
               aria-label="Alternar tema oscuro/claro"
             />
@@ -184,7 +185,7 @@ export default function Home() {
       {/* ========================================== */}
       <section className={`relative flex flex-col justify-center min-h-[150vh] py-6 md:py-10 z-20 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>
         
-        {/* === LAS DOS LÍNEAS HORIZONTALES SUPERIORES === */}
+        {/* LÍNEAS HORIZONTALES SUPERIORES (LAS 2) */}
         <motion.div 
           className={`absolute left-0 right-0 top-0 h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
           initial={{ scaleX: 0 }}
@@ -200,17 +201,19 @@ export default function Home() {
           transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} 
         />
 
+        {/* FONDO MIOPE */}
         <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
           <div className="sticky top-[40vh] w-full text-center">
-            <h1 className={`text-[12vw] md:text-[8.5vw] font-bold opacity-20 tracking-tighter leading-[0.8] blur-[4px] transition-colors duration-500 whitespace-nowrap ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
-             This is going  <br />
-             to take longer
+            <h1 className={`text-[12vw] md:text-[8vw] font-bold opacity-20 tracking-tighter leading-[0.8] blur-[4px] transition-colors duration-500 whitespace-nowrap ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
+               <br />
+              <br />
+              
             </h1>
           </div>
         </div>
 
-        {/* Contenedor Principal */}
-        <div className="z-10 flex flex-col items-end justify-center w-full pt-[25vh]">
+        {/* CONTENEDOR PRINCIPAL: Le di pb-[15vh] para que la firma no choque con la línea final */}
+        <div className="z-10 flex flex-col items-end justify-center w-full pt-[25vh] pb-[15vh]">
           
           {/* Frases Gigantes */}
           {section2Lines.map((line, lineIndex) => (
@@ -238,23 +241,17 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }} 
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            /* 👇 CONTROLES DE DISEÑO 👇
-               - ESPACIADO: 'leading-[1.1]' aprieta los renglones. Si lo querés MÁS pegado, usá 'leading-none'.
-               - MOVER A LA IZQUIERDA: Modificá 'md:mr-[35vw]'. 
-                 Si lo querés MÁS a la izquierda, subí el número (ej: md:mr-[45vw]).
-                 Si lo querés más al centro, bajalo (ej: md:mr-[25vw]).
-            */
             className={`mt-10 self-end mr-[15vw] md:mr-[55vw] text-left text-base md:text-xl font-bold tracking-tighter leading-[1.1] max-w-sm md:max-w-md transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
-          >
-            connecting the dots<br />
-            between heavy engineering<br />
-            and cute ui. breaking<br />
-            things just to learn<br />
-            how to fix them,<br />
-            making the web a<br />
-            slightly prettier place<br />
-            to be, and having fun<br />
-            while doing it.
+            >
+            bridging the gap between<br />
+            robust software architecture<br />
+            and intuitive digital design.<br />
+            i love solving complex<br />
+            problems with clean code,<br />
+            focusing on every detail<br />
+            to build web experiences<br />
+            that are not just functional,<br />
+            but genuinely a joy to use.
           </motion.p>
 
           {/* FIRMA MASIVA */}
@@ -263,7 +260,7 @@ export default function Home() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 1, delay: 0.6 }}
-            className={`mt-16 pr-4 md:pr-8 flex flex-row items-center justify-end gap-2 md:gap-6 text-[18vw] sm:text-[14vw] md:text-[10vw] font-bold tracking-[-0.08em] leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
+            className={`mt-32 md:mt-48 pr-4 md:pr-8 flex flex-row items-center justify-end gap-2 md:gap-6 text-[18vw] sm:text-[14vw] md:text-[10vw] font-bold tracking-[-0.08em] leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
           >
             <span>est.&apos;26</span>
             <span>—</span>
@@ -272,12 +269,13 @@ export default function Home() {
 
         </div>
 
-        {/* LÍNEA HORIZONTAL BOTTOM */}
+        {/* ÚNICA LÍNEA HORIZONTAL INFERIOR (1 Abajo) 
+            Solución: El margen positivo hace que se dibuje sin importar si está pegada al final de la página */}
         <motion.div 
           className={`absolute left-0 right-0 bottom-[5vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "50px" }}
           transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} 
         />
 

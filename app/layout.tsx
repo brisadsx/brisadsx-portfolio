@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-
 import localFont from "next/font/local";
 import "./globals.css";
-
+import { ThemeProvider } from "../context/ThemeContext"; // IMPORTAMOS EL CONTEXTO
 
 const neueHaas = localFont({
-
   src: "./fonts/neue-haas.ttf", 
   variable: "--font-neue-haas",
 });
@@ -22,7 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${neueHaas.variable} font-sans`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
