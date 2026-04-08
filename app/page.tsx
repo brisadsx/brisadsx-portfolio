@@ -53,8 +53,19 @@ const subtitleDelays = [
   3.4, 2.8, 4.0, 2.5, 3.7, 3.1, 4.2, 2.7, 3.6, 3.0, 4.1, 2.9, 3.8, 3.2, 3.5
 ];
 
+const scrollDelays = [
+  0.1, 0.35, 0.05, 0.4, 0.2, 0.5, 0.15, 0.25, 0.45, 0.0, 0.3, 0.55
+];
+
 export default function Home() {
   const title = "Brisa Gabriela";
+  
+  const section2Lines = [
+    "just a girl",
+    "building cool",
+    "things on the",
+    "internet."
+  ];
   
   const subtitle1 = "this is under construction".match(/.{1,2}/g) || [];
   const subtitle2 = "soon soon".match(/.{1,2}/g) || [];
@@ -83,7 +94,7 @@ export default function Home() {
       
       <Preloader />
 
-      {/* Línea Vertical - Sombra solo en tema claro */}
+      {/* --- SECCIÓN 1: INTOCABLE --- */}
       <motion.div 
         className={`fixed top-0 bottom-0 left-[35.333%] w-[2px] z-50 pointer-events-none transition-all duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
         initial={{ scaleY: 0, transformOrigin: "top" }}
@@ -102,17 +113,14 @@ export default function Home() {
         </div>
         
         <div className="flex justify-start items-center tracking-tighter relative">
-            
             <button 
               onClick={() => setIsDarkTheme(!isDarkTheme)}
               className={`absolute -left-[40px] w-3.5 h-3.5 hover:rotate-90 transition-transform duration-300 ${isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#E11D48]/50"}`}
               aria-label="Alternar tema oscuro/claro"
             />
-            
             <div className="ml-[190px]">
                 <ScrambleLink href="#" isDarkTheme={isDarkTheme}>about</ScrambleLink>
             </div>
-            
         </div>
 
         <div className="flex justify-end gap-4 md:gap-8 tracking-tighter">
@@ -122,7 +130,7 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      <section className={`relative flex flex-col h-screen p-6 md:p-10 z-10 backdrop-blur-sm overflow-hidden transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>       
+      <section className={`relative flex flex-col h-screen p-6 md:p-10 z-10 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>       
 
         <div className="absolute bottom-12 left-6 md:bottom-20 md:left-10 z-0 pointer-events-none select-none">
           <h1 className={`text-[13vw] md:text-[9.5vw] font-bold opacity-20 tracking-tighter leading-[0.75] blur-[4px] transition-colors duration-500 ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
@@ -131,7 +139,6 @@ export default function Home() {
           </h1>
         </div>
 
-        {/* Línea Horizontal - Ajustada a 2.0s */}
         <motion.div 
           className={`absolute left-0 right-0 top-[190px] h-[1.9px] z-0 transition-all duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
           initial={{ scaleX: 0, transformOrigin: "left" }}
@@ -139,7 +146,6 @@ export default function Home() {
           transition={{ duration: 1.5, delay: 2.0, ease: [0.76, 0, 0.24, 1] }} 
         />
 
-        {/* Textos Libres */}
         <div className={`absolute top-[200px] left-[33%] flex flex-col gap-1 text-[1.5rem] tracking-tighter z-10 transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}>
           <motion.div className="flex whitespace-pre" variants={container} initial="hidden" animate="visible">
             {subtitle1.map((chunk, index) => (
@@ -154,10 +160,9 @@ export default function Home() {
           </motion.div>
         </div>
         
-        {/* Tu Nombre */}
         <div className="mt-auto flex flex-col items-start text-left z-10 pb-0 -mb-2">
           <motion.h1
-            className={`flex justify-start overflow-hidden text-[18vw] md:text-[17.3vw] font-bold tracking-tighter leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
+            className={`flex justify-start text-[18vw] md:text-[17.3vw] font-bold tracking-tighter leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
             variants={container}
             initial="hidden"
             animate="visible"
@@ -174,30 +179,108 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={`relative w-full min-h-screen border-t-[1.9px] z-20 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "border-[#FDCEDF]/70 bg-[#09090B]/40" : "border-[#E11D48]/50 bg-[#F9F5F6]/40"}`}>
+      {/* ========================================== */}
+      {/* PANTALLA 2: QUÉ HAGO Y CÓMO LO HAGO          */}
+      {/* ========================================== */}
+      <section className={`relative flex flex-col justify-center min-h-[150vh] py-6 md:py-10 z-20 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>
         
-        <div className="grid grid-cols-1 md:grid-cols-[35.333%_1fr] min-h-screen">
-          
-          <div className="p-6 md:p-10 md:pr-16 flex flex-col justify-center z-10">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-8 leading-[0.9]">
-            </h2>
-            <p className="text-base md:text-lg text-zinc-500 tracking-tight leading-relaxed max-w-sm">
-            </p>
-          </div>
+        {/* === LAS DOS LÍNEAS HORIZONTALES SUPERIORES === */}
+        <motion.div 
+          className={`absolute left-0 right-0 top-0 h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} 
+        />
+        <motion.div 
+          className={`absolute left-0 right-0 top-[15vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} 
+        />
 
-          <div className="p-6 md:p-10 flex items-center justify-center z-10">
-            <div className={`w-full max-w-lg aspect-[4/5] border-[1.9px] relative overflow-hidden group transition-colors duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/10 border-[#FDCEDF]/30" : "bg-[#E11D48]/10 border-[#E11D48]/30"}`}>
-              <div className={`absolute inset-0 flex items-center justify-center tracking-[0.2em] text-sm transition-colors duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70" : "text-[#E11D48]/50"}`}>
-              </div>
-              
-              <div className={`absolute top-0 left-0 w-full h-[1.9px] -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70" : "bg-[#E11D48]/50"}`} />
-              <div className={`absolute bottom-0 right-0 w-full h-[1.9px] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70" : "bg-[#E11D48]/50"}`} />
-              <div className={`absolute top-0 right-0 h-full w-[1.9px] -translate-y-full group-hover:translate-y-0 transition-transform duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70" : "bg-[#E11D48]/50"}`} />
-              <div className={`absolute bottom-0 left-0 h-full w-[1.9px] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#E11D48]/50"}`} />
-            </div>
+        <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
+          <div className="sticky top-[40vh] w-full text-center">
+            <h1 className={`text-[12vw] md:text-[8.5vw] font-bold opacity-20 tracking-tighter leading-[0.8] blur-[4px] transition-colors duration-500 whitespace-nowrap ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
+             This is going  <br />
+             to take longer
+            </h1>
           </div>
+        </div>
+
+        {/* Contenedor Principal */}
+        <div className="z-10 flex flex-col items-end justify-center w-full pt-[25vh]">
+          
+          {/* Frases Gigantes */}
+          {section2Lines.map((line, lineIndex) => (
+            <motion.h2
+              key={lineIndex}
+              className={`flex justify-end w-full pr-4 md:pr-8 text-[19vw] sm:text-[14vw] md:text-[15vw] lg:text-[11vw] font-bold tracking-[-0.06em] leading-[0.80] transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
+              variants={container}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              {line.split("").map((char, index) => {
+                const letterDelay = scrollDelays[(index + lineIndex * 2) % scrollDelays.length];
+                return (
+                  <motion.span key={index} variants={letterVariants} custom={letterDelay} className={char === " " ? "w-[2vw]" : "inline-block"}>
+                    {char}
+                  </motion.span>
+                );
+              })}
+            </motion.h2>
+          ))}
+
+         <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }} 
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            /* 👇 CONTROLES DE DISEÑO 👇
+               - ESPACIADO: 'leading-[1.1]' aprieta los renglones. Si lo querés MÁS pegado, usá 'leading-none'.
+               - MOVER A LA IZQUIERDA: Modificá 'md:mr-[35vw]'. 
+                 Si lo querés MÁS a la izquierda, subí el número (ej: md:mr-[45vw]).
+                 Si lo querés más al centro, bajalo (ej: md:mr-[25vw]).
+            */
+            className={`mt-10 self-end mr-[15vw] md:mr-[55vw] text-left text-base md:text-xl font-bold tracking-tighter leading-[1.1] max-w-sm md:max-w-md transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
+          >
+            connecting the dots<br />
+            between heavy engineering<br />
+            and cute ui. breaking<br />
+            things just to learn<br />
+            how to fix them,<br />
+            making the web a<br />
+            slightly prettier place<br />
+            to be, and having fun<br />
+            while doing it.
+          </motion.p>
+
+          {/* FIRMA MASIVA */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 1, delay: 0.6 }}
+            className={`mt-16 pr-4 md:pr-8 flex flex-row items-center justify-end gap-2 md:gap-6 text-[18vw] sm:text-[14vw] md:text-[10vw] font-bold tracking-[-0.08em] leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
+          >
+            <span>est.&apos;26</span>
+            <span>—</span>
+            <span>bg®</span>
+          </motion.div>
 
         </div>
+
+        {/* LÍNEA HORIZONTAL BOTTOM */}
+        <motion.div 
+          className={`absolute left-0 right-0 bottom-[5vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} 
+        />
+
       </section>
 
     </main>
