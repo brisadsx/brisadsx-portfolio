@@ -1,10 +1,22 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { ThemeProvider } from "../context/ThemeContext"; // IMPORTAMOS EL CONTEXTO
+import { ThemeProvider } from "../context/ThemeContext"; 
 
+// Agrupamos la normal y la bold en la misma familia tipográfica
 const neueHaas = localFont({
-  src: "./fonts/neue-haas.ttf", 
+  src: [
+    {
+      path: "./fonts/neue-haas.ttf",
+      weight: "400", // Peso normal
+      style: "normal",
+    },
+    {
+      path: "./fonts/neue-haasbold.ttf",
+      weight: "700", // Peso bold
+      style: "normal",
+    }
+  ],
   variable: "--font-neue-haas",
 });
 
@@ -19,6 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    
     <html lang="es" className={`${neueHaas.variable} font-sans`}>
       <body className="antialiased">
         <ThemeProvider>

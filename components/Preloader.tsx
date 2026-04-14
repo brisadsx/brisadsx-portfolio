@@ -30,7 +30,7 @@ export default function Preloader() {
         >
           <div className="overflow-hidden w-full flex justify-start">
             <motion.h1
-              className={`font-neue-haas text-[25vw] md:text-[28vw] font-bold tracking-[-0.05em] whitespace-nowrap pl-[5vw] transition-colors duration-500 ${textColor}`}
+              className={`font-neue-haas text-[25vw] md:text-[28vw] tracking-[-0.05em] whitespace-nowrap pl-[5vw] transition-colors duration-500 ${textColor}`}
               initial={{ x: "0%" }} 
               animate={{ x: "-15%" }} 
               transition={{ 
