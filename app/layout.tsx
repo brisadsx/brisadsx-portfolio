@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "../context/ThemeContext"; 
 
-// Agrupamos la normal y la bold en la misma familia tipográfica
 const neueHaas = localFont({
   src: [
     {

@@ -13,9 +13,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   useEffect(() => {
-    // TRUCO: Al envolverlo en una función asíncrona (async), 
-    // hacemos que el cambio de estado sea asíncrono y ESLint ya no se queja.
-    // Además, esto asegura que Next.js solo lea el localStorage en el cliente.
     const loadSavedTheme = async () => {
       const savedTheme = localStorage.getItem("portfolio-theme");
       if (savedTheme === "dark") {

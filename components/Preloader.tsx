@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "../context/ThemeContext"; // IMPORTAMOS EL HOOK
+import { useTheme } from "../context/ThemeContext";
 
 export default function Preloader() {
   const [isLoading, setIsLoading] = useState(true);
-  const { isDarkTheme } = useTheme(); // LEEMOS EL ESTADO DEL TEMA
+  const { isDarkTheme } = useTheme(); 
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -15,7 +15,7 @@ export default function Preloader() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Lógica de colores del telón
+
   const bgColor = isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#E11D48]/50";
   const textColor = isDarkTheme ? "text-[#09090B]" : "text-[#F9F5F6]";
 

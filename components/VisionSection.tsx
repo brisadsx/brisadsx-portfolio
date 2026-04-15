@@ -1,29 +1,30 @@
 "use client";
 
 import { useRef, useEffect, MouseEvent } from "react";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Colores del tema base
   const bgColor = isDarkTheme ? "bg-[#09090B]" : "bg-[#FAFAFA]";
   const solidOverlayColor = isDarkTheme ? "#FDCEDF" : "#E11D48";
   
-  // 🔥 RESTAURADO: Tu efecto cristalino EXACTO con los mix-blend modes
   const crystalEffect = isDarkTheme 
     ? "text-[#FDCEDF]/70 mix-blend-screen" 
     : "text-[#E11D48]/50 mix-blend-multiply";
 
-  // Textos de tus servicios (Palabras clave profesionales y vendibles)
   const services = [
     "Digital Experiences",
-    "E-Commerce & SaaS",
+    "eCommerce Platforms",
     "3D Web Environments",
     "Interactive Portfolios",
-    "Landing Pages"
+    "Landing Pages",
+    "More +"
   ];
+
+  // Duplicamos la lista para crear el efecto de scroll infinito sin cortes
+  const duplicatedServices = [...services, ...services];
 
   // 1. LÓGICA DEL CANVAS: Crear, pintar y redimensionar la superposición sólida
   useEffect(() => {
@@ -32,7 +33,6 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Función de redimensionamiento y pintado inicial
     const resizeAndPaintOverlay = () => {
       const parent = canvas.parentElement;
       if (!parent) return;
@@ -40,20 +40,17 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
       canvas.width = parent.clientWidth;
       canvas.height = parent.clientHeight;
 
-      // Pintamos el canvas completamente del color rosa/rojo del tema
       ctx.fillStyle = solidOverlayColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
-    // Ejecutamos inicialmente y escuchamos el redimensionamiento
     resizeAndPaintOverlay();
     window.addEventListener("resize", resizeAndPaintOverlay);
 
-    // Limpieza del listener
     return () => {
       window.removeEventListener("resize", resizeAndPaintOverlay);
     };
-  }, [solidOverlayColor]); // Se repinta limpio y sin estados extra cuando cambia el color
+  }, [solidOverlayColor]);
 
   // 2. LÓGICA DE BORRADO: El mouse actúa como goma de borrar física
   const handleMouseMove = (e: MouseEvent<HTMLElement>) => {
@@ -66,11 +63,10 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // ESTA ES LA MAGIA: Cambiamos el modo de composición para que el dibujo borre lo existente
     ctx.globalCompositeOperation = 'destination-out';
     
-    // Dibujamos un círculo de borrado suave (Goma de borrar)
-    const brushRadius = typeof window !== 'undefined' && window.innerWidth < 768 ? 60 : 100; 
+    // Pincel un poco más grande para que sea más fácil leer el texto en movimiento
+    const brushRadius = typeof window !== 'undefined' && window.innerWidth < 768 ? 70 : 120; 
     
     const gradient = ctx.createRadialGradient(x, y, 0, x, y, brushRadius);
     gradient.addColorStop(0, 'rgba(0, 0, 0, 1)'); 
@@ -82,22 +78,7 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
     ctx.arc(x, y, brushRadius, 0, Math.PI * 2);
     ctx.fill();
     
-    // Restauramos el modo de composición predeterminado
     ctx.globalCompositeOperation = 'source-over';
-  };
-
-  // 3. VARIANTES DE FRAMER MOTION
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
-    }
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
   };
 
   return (
@@ -113,28 +94,37 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
         className="absolute inset-0 z-20 pointer-events-none"
       />
 
-      {/* 2. TEXTOS CENTRALES (z-10 para quedar debajo de la "goma de borrar") */}
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        className="relative z-10 flex flex-col items-center justify-center gap-2 md:gap-4 text-center px-4 pointer-events-none w-full"
-      >
-        <motion.p variants={itemVariants} className={`text-sm md:text-base font-medium tracking-tight mb-4 md:mb-8 ${crystalEffect}`}>
+      {/* 2. TEXTO PEQUEÑO ESTÁTICO (Fijo en el centro para anclar la vista) */}
+      <div className="absolute z-10 flex w-full justify-center top-[15vh] md:top-[20vh] pointer-events-none">
+        <p className={`text-sm md:text-base font-medium tracking-tighter opacity-70 ${crystalEffect}`}>
           what we can build together
-        </motion.p>
+        </p>
+      </div>
+
+      {/* 3. VERTICAL MARQUEE (El texto gigante desplazándose) */}
+      <div className="absolute z-0 flex flex-col items-center justify-center w-full h-full pointer-events-none overflow-hidden">
         
-        {services.map((service, index) => (
-          <motion.h2 
-            key={index}
-            variants={itemVariants}
-            className={`text-[12vw] md:text-[6.5vw] font-bold tracking-[-0.08em] leading-[0.85] ${crystalEffect}`}
-          >
-            {service}
-          </motion.h2>
-        ))}
-      </motion.div>
+        {/* motion.div hace el loop infinito moviéndose del 0% al -50% (la mitad exacta) */}
+        <motion.div 
+          animate={{ y: ["0%", "-50%"] }}
+          transition={{ 
+            repeat: Infinity, 
+            ease: "linear", 
+            duration: 25 
+          }}
+          className="flex flex-col items-center gap-4 md:gap-8 pt-[50vh]"
+        >
+          {duplicatedServices.map((service, index) => (
+            <h2 
+              key={index}
+              className={`text-[12vw] md:text-[6vw] tracking-tighter leading-[0.6] text-center w-full whitespace-nowrap ${crystalEffect}`}
+            >
+              {service}
+            </h2>
+          ))}
+        </motion.div>
+
+      </div>
 
     </section>
   );
