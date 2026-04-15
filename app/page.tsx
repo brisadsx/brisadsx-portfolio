@@ -99,7 +99,7 @@ export default function Home() {
         {/* sec 1 */}
         <section className={`relative flex flex-col h-screen p-6 md:p-10 z-10 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>       
           <div className="absolute bottom-4 -left-2 right-2 md:bottom-8 md:-left-[-1.8rem] md:right-10 z-0 pointer-events-none select-none">
-            <h1 className={`flex flex-col w-full text-[26vw] md:text-[8vw] font-bold uppercase opacity-[0.16] md:opacity-[0.18] blur-[1px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
+            <h1 className={`flex flex-col w-full text-[26vw] md:text-[8vw] font-bold uppercase opacity-[0.16] md:opacity-[0.18] blur-[3px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
               
               <span className="text-left">
                 web designer,
@@ -147,7 +147,7 @@ export default function Home() {
           <motion.div className={`absolute left-0 right-0 top-[30vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
           <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
             <div className="absolute top-[40vh] md:top-[45vh] w-full flex flex-col pointer-events-none overflow-hidden z-0 px-4 md:px-8">
-              <div className={`font-black font-bold opacity-[0.16] md:opacity-[0.18] blur-[1px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 w-full uppercase whitespace-nowrap text-[13vw] md:text-[8.3vw] ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
+              <div className={`font-black font-bold opacity-[0.16] md:opacity-[0.18] blur-[3px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 w-full uppercase whitespace-nowrap text-[13vw] md:text-[8.3vw] ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
                 
                 <div className="text-left">ux/ui design</div>
                 <div className="text-center pr-[15%]">product strategy</div>
@@ -176,6 +176,8 @@ export default function Home() {
       
 
       <VisionSection isDarkTheme={isDarkTheme} />
+
+
     </main>
   );
 }
