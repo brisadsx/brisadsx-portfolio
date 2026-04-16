@@ -2,7 +2,7 @@
 
 import Preloader from "../components/Preloader";
 import VisionSection from "../components/VisionSection";
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 
@@ -62,12 +62,25 @@ export default function Home() {
     }),
   };
 
+  // 🔥 LA MAGIA DEL OVERLAY (PARALLAX DEPTH)
+  // Monitoreamos cuándo la Sección 3 (Vision) entra a la pantalla
+  const visionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: visionRef,
+    offset: ["start end", "start start"] // Desde que asoma por abajo, hasta que llega arriba
+  });
+
+  // Hundimos la sección 2: Se achica a 0.92 y baja un poco para dar efecto de profundidad 3D
+  const scalePrevious = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
+  const yPrevious = useTransform(scrollYProgress, [0, 1], ["0vh", "5vh"]);
+  const opacityPrevious = useTransform(scrollYProgress, [0, 1], [1, 0.4]);
+
   return (
-    <main className={`relative flex flex-col overflow-x-hidden font-neue-haas transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B] text-[#FDCEDF]" : "bg-[#FAFAFA] text-[#E11D48]"}`}>
+    <main className={`relative flex flex-col font-neue-haas transition-colors duration-500 bg-black`}>
       <Preloader />
 
       <motion.nav 
-        className="fixed top-0 left-0 w-full pt-4 px-6 md:pt-6 md:px-10 z-40 grid grid-cols-3 items-start text-base md:text-[1.5rem] tracking-[0.2em] font-bold bg-transparent"
+        className="fixed top-0 left-0 w-full pt-4 px-6 md:pt-6 md:px-10 z-50 grid grid-cols-3 items-start text-base md:text-[1.5rem] tracking-[0.2em] font-bold bg-transparent"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.8 }} 
       >
         <div className="flex justify-start tracking-tighter">
@@ -86,97 +99,84 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      
-      <div className="relative w-full">
-        
-        <motion.div 
-          className={`absolute top-0 bottom-0 left-[35.333%] w-[2px] z-50 pointer-events-none transition-all duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
-          initial={{ scaleY: 0, transformOrigin: "top" }}
-          animate={{ scaleY: 1 }}
-          transition={{ duration: 1.5, delay: 1.8, ease: [0.76, 0, 0.24, 1] }}
-        />
+      {/* CONTENEDOR SECCIONES 1 Y 2: Se "hunde" (scale) cuando sube la sección 3 */}
+      <motion.div 
+        style={{ scale: scalePrevious, y: yPrevious, opacity: opacityPrevious }} 
+        className="origin-bottom relative w-full overflow-x-hidden z-10"
+      >
+        <div className={`transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B] text-[#FDCEDF]" : "bg-[#FAFAFA] text-[#E11D48]"}`}>
+          <motion.div 
+            className={`absolute top-0 bottom-0 left-[35.333%] w-[2px] z-50 pointer-events-none transition-all duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
+            initial={{ scaleY: 0, transformOrigin: "top" }}
+            animate={{ scaleY: 1 }}
+            transition={{ duration: 1.5, delay: 1.8, ease: [0.76, 0, 0.24, 1] }}
+          />
 
-        {/* sec 1 */}
-        <section className={`relative flex flex-col h-screen p-6 md:p-10 z-10 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>       
-          <div className="absolute bottom-4 -left-2 right-2 md:bottom-8 md:-left-[-1.8rem] md:right-10 z-0 pointer-events-none select-none">
-            <h1 className={`flex flex-col w-full text-[26vw] md:text-[8vw] font-bold uppercase opacity-[0.16] md:opacity-[0.18] blur-[3px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
-              
-              <span className="text-left">
-                web designer,
-              </span>
-
-              <span className="flex justify-between w-full">
-                <span>based</span>
-                <span>in bs. as.</span>
-              </span>
-
-              <span className="flex justify-between w-full">
-                <span>and</span>
-                <span>creative tech</span>
-              </span>
-
-            </h1>
-          </div>
-          <motion.div className={`absolute left-0 right-0 top-[190px] h-[1.9px] z-0 transition-all duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0, transformOrigin: "left" }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, delay: 2.0, ease: [0.76, 0, 0.24, 1] }} />
-            <div className={`absolute top-[200px] left-[33%] flex flex-col text-[1.5rem] tracking-tighter z-10 transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}>
-              
-              
-              <motion.div className="flex whitespace-pre" variants={container} initial="hidden" animate="visible">
-                {subtitle1.map((chunk, index) => (
-                  <motion.span key={`sub1-${index}`} variants={letterVariants} custom={subtitleDelays[index]}>{chunk}</motion.span>
-                ))}
-              </motion.div>
-
-              <motion.div className="flex whitespace-pre mt-[140px]" variants={container} initial="hidden" animate="visible">
-                {subtitle2.map((chunk, index) => (
-                  <motion.span key={`sub2-${index}`} variants={letterVariants} custom={subtitleDelays[index]}>{chunk}</motion.span>
-                ))}
-              </motion.div>
-
+          {/* sec 1 */}
+          <section className={`relative flex flex-col h-screen p-6 md:p-10 z-10 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>       
+            <div className="absolute bottom-4 -left-2 right-2 md:bottom-8 md:-left-[-1.8rem] md:right-10 z-0 pointer-events-none select-none">
+              <h1 className={`flex flex-col w-full text-[26vw] md:text-[8vw] font-bold uppercase opacity-[0.16] md:opacity-[0.18] blur-[3px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
+                <span className="text-left">web designer,</span>
+                <span className="flex justify-between w-full"><span>based</span><span>in bs. as.</span></span>
+                <span className="flex justify-between w-full"><span>and</span><span>creative tech</span></span>
+              </h1>
             </div>
-          <div className="mt-auto flex flex-col items-start text-left z-10 pb-0 -mb-2 md:-mb-5">
-            <motion.h1 className={`flex justify-start font-bold text-[23vw] md:text-[18.3vw] tracking-[-0.08em] -ml-4 md:-ml-2 leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} variants={container} initial="hidden" animate="visible">
-              {title.split("").map((char, index) => { const letterDelay = chaoticDelays[index]; return (<motion.span key={index} variants={letterVariants} custom={letterDelay} className={char === " " ? "w-[3vw]" : "inline-block"}>{char}</motion.span>); })}
-            </motion.h1>
-          </div>
-        </section>
+            <motion.div className={`absolute left-0 right-0 top-[190px] h-[1.9px] z-0 transition-all duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0, transformOrigin: "left" }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, delay: 2.0, ease: [0.76, 0, 0.24, 1] }} />
+              <div className={`absolute top-[200px] left-[33%] flex flex-col text-[1.5rem] tracking-tighter z-10 transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}>
+                <motion.div className="flex whitespace-pre" variants={container} initial="hidden" animate="visible">
+                  {subtitle1.map((chunk, index) => (
+                    <motion.span key={`sub1-${index}`} variants={letterVariants} custom={subtitleDelays[index]}>{chunk}</motion.span>
+                  ))}
+                </motion.div>
+                <motion.div className="flex whitespace-pre mt-[140px]" variants={container} initial="hidden" animate="visible">
+                  {subtitle2.map((chunk, index) => (
+                    <motion.span key={`sub2-${index}`} variants={letterVariants} custom={subtitleDelays[index]}>{chunk}</motion.span>
+                  ))}
+                </motion.div>
+              </div>
+            <div className="mt-auto flex flex-col items-start text-left z-10 pb-0 -mb-2 md:-mb-5">
+              <motion.h1 className={`flex justify-start font-bold text-[23vw] md:text-[18.3vw] tracking-[-0.08em] -ml-4 md:-ml-2 leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} variants={container} initial="hidden" animate="visible">
+                {title.split("").map((char, index) => { const letterDelay = chaoticDelays[index]; return (<motion.span key={index} variants={letterVariants} custom={letterDelay} className={char === " " ? "w-[3vw]" : "inline-block"}>{char}</motion.span>); })}
+              </motion.h1>
+            </div>
+          </section>
 
-        {/* sec 2 */}
-        <section className={`relative flex flex-col justify-center min-h-[200vh] py-6 md:py-10 pb-[25vh] z-20 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>
-          <motion.div className={`absolute left-0 right-0 top-0 h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
-          <motion.div className={`absolute left-0 right-0 top-[30vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
-          <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
-            <div className="absolute top-[40vh] md:top-[45vh] w-full flex flex-col pointer-events-none overflow-hidden z-0 px-4 md:px-8">
-              <div className={`font-black font-bold opacity-[0.16] md:opacity-[0.18] blur-[3px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 w-full uppercase whitespace-nowrap text-[13vw] md:text-[8.3vw] ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
-                
-                <div className="text-left">ux/ui design</div>
-                <div className="text-center pr-[15%]">art direction</div>
-                <div className="text-left">creative tech</div>
-                <div className="text-center pl-[15%]">information</div>
-                <div className="text-right">& architecture</div>
-                <div className="text-left">interaction</div>
-                <div className="text-center">(each integrated pixel)</div>
-                <div className="text-center pr-[10%]">prototyping</div>
-                <div className="text-right">and</div>
-                <div className="text-right pr-[25%]">mooooo</div>
-                <div className="text-right">ooooore</div>
-
+          {/* sec 2 */}
+          <section className={`relative flex flex-col justify-center min-h-[200vh] py-6 md:py-10 pb-[25vh] z-20 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>
+            <motion.div className={`absolute left-0 right-0 top-0 h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
+            <motion.div className={`absolute left-0 right-0 top-[30vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
+            <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
+              <div className="absolute top-[40vh] md:top-[45vh] w-full flex flex-col pointer-events-none overflow-hidden z-0 px-4 md:px-8">
+                <div className={`font-black font-bold opacity-[0.16] md:opacity-[0.18] blur-[3px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 w-full uppercase whitespace-nowrap text-[13vw] md:text-[8.3vw] ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
+                  <div className="text-left">ux/ui design</div>
+                  <div className="text-center pr-[15%]">art direction</div>
+                  <div className="text-left">creative tech</div>
+                  <div className="text-center pl-[15%]">information</div>
+                  <div className="text-right">& architecture</div>
+                  <div className="text-left">interaction</div>
+                  <div className="text-center">(each integrated pixel)</div>
+                  <div className="text-center pr-[10%]">prototyping</div>
+                  <div className="text-right">and</div>
+                  <div className="text-right pr-[25%]">mooooo</div>
+                  <div className="text-right">ooooore</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="z-10 flex flex-col items-end justify-center w-full pt-[45vh] md:pt-[37vh]">
-            {section2Lines.map((line, lineIndex) => (<motion.h2 key={lineIndex} className={`flex justify-end w-full pr-4 md:pr-8 text-[19vw] sm:text-[14vw] md:text-[15vw] lg:text-[11vw] font-bold tracking-[-0.06em] leading-[0.80] transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} variants={container} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}>{line.split("").map((char, index) => { const letterDelay = scrollDelays[(index + lineIndex * 2) % scrollDelays.length]; return (<motion.span key={index} variants={letterVariants} custom={letterDelay} className={char === " " ? "w-[2vw]" : "inline-block"}>{char}</motion.span>); })}</motion.h2>))}
-            <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }} className={`mt-10 self-end mr-[15vw] md:mr-[55vw] text-left text-base md:text-xl tracking-tighter leading-[1.1] max-w-sm md:max-w-md transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}>bridging the gap between<br />robust software architecture<br />and intuitive digital design.<br />turning deep complexity<br />into invisible logic,<br />focusing on every detail<br />to build web experiences<br />that are not just functional,<br />but genuinely a joy to use.</motion.p>
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1, delay: 0.6 }} className={`mt-[30vh] md:mt-[30vh] mb-[16vh] md:mb-[6vh] pr-4 md:pr-8 flex flex-row items-center justify-end gap-2 md:gap-6 text-[18vw] sm:text-[14vw] md:text-[10vw] tracking-[-0.08em] leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}><span>est.&apos;26</span><span className="px-8 md:px-38">—</span><span>bg®</span></motion.div>
-          </div>
-          <motion.div className={`absolute left-0 right-0 bottom-[15vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
-          <motion.div className={`absolute left-0 right-0 bottom-[4vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "50px" }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
-        </section>
-      </div>
+            <div className="z-10 flex flex-col items-end justify-center w-full pt-[45vh] md:pt-[37vh]">
+              {section2Lines.map((line, lineIndex) => (<motion.h2 key={lineIndex} className={`flex justify-end w-full pr-4 md:pr-8 text-[19vw] sm:text-[14vw] md:text-[15vw] lg:text-[11vw] font-bold tracking-[-0.06em] leading-[0.80] transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} variants={container} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}>{line.split("").map((char, index) => { const letterDelay = scrollDelays[(index + lineIndex * 2) % scrollDelays.length]; return (<motion.span key={index} variants={letterVariants} custom={letterDelay} className={char === " " ? "w-[2vw]" : "inline-block"}>{char}</motion.span>); })}</motion.h2>))}
+              <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }} className={`mt-10 self-end mr-[15vw] md:mr-[55vw] text-left text-base md:text-xl tracking-tighter leading-[1.1] max-w-sm md:max-w-md transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}>bridging the gap between<br />robust software architecture<br />and intuitive digital design.<br />turning deep complexity<br />into invisible logic,<br />focusing on every detail<br />to build web experiences<br />that are not just functional,<br />but genuinely a joy to use.</motion.p>
+              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1, delay: 0.6 }} className={`mt-[30vh] md:mt-[30vh] mb-[16vh] md:mb-[6vh] pr-4 md:pr-8 flex flex-row items-center justify-end gap-2 md:gap-6 text-[18vw] sm:text-[14vw] md:text-[10vw] tracking-[-0.08em] leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}><span>est.&apos;26</span><span className="px-8 md:px-38">—</span><span>bg®</span></motion.div>
+            </div>
+            <motion.div className={`absolute left-0 right-0 bottom-[15vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
+            <motion.div className={`absolute left-0 right-0 bottom-[4vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "50px" }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
+          </section>
+        </div>
+      </motion.div>
       
-
-      <VisionSection isDarkTheme={isDarkTheme} />
-
+      {/* SECCIÓN 3: Entra pisando fuerte por encima (z-20) */}
+      <div ref={visionRef} className="relative z-20 w-full drop-shadow-2xl">
+        <VisionSection isDarkTheme={isDarkTheme} />
+      </div>
 
     </main>
   );

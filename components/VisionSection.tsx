@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, MouseEvent } from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -23,10 +23,20 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
     "More +"
   ];
 
-  // Duplicamos la lista para crear el efecto de scroll infinito sin cortes
-  const duplicatedServices = [...services, ...services];
+ 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.3 }
+    }
+  };
 
-  // 1. LÓGICA DEL CANVAS: Crear, pintar y redimensionar la superposición sólida
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } } // Easing premium de Apple
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -36,10 +46,8 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
     const resizeAndPaintOverlay = () => {
       const parent = canvas.parentElement;
       if (!parent) return;
-
       canvas.width = parent.clientWidth;
       canvas.height = parent.clientHeight;
-
       ctx.fillStyle = solidOverlayColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
@@ -47,12 +55,9 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
     resizeAndPaintOverlay();
     window.addEventListener("resize", resizeAndPaintOverlay);
 
-    return () => {
-      window.removeEventListener("resize", resizeAndPaintOverlay);
-    };
+    return () => window.removeEventListener("resize", resizeAndPaintOverlay);
   }, [solidOverlayColor]);
 
-  // 2. LÓGICA DE BORRADO: El mouse actúa como goma de borrar física
   const handleMouseMove = (e: MouseEvent<HTMLElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -64,20 +69,16 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
     const y = e.clientY - rect.top;
 
     ctx.globalCompositeOperation = 'destination-out';
-    
-    // Pincel un poco más grande para que sea más fácil leer el texto en movimiento
-    const brushRadius = typeof window !== 'undefined' && window.innerWidth < 768 ? 70 : 120; 
-    
+    const brushRadius = typeof window !== 'undefined' && window.innerWidth < 768 ? 80 : 150; 
     const gradient = ctx.createRadialGradient(x, y, 0, x, y, brushRadius);
     gradient.addColorStop(0, 'rgba(0, 0, 0, 1)'); 
-    gradient.addColorStop(0.6, 'rgba(0, 0, 0, 0.8)'); 
+    gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.8)'); 
     gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
     
     ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.arc(x, y, brushRadius, 0, Math.PI * 2);
     ctx.fill();
-    
     ctx.globalCompositeOperation = 'source-over';
   };
 
@@ -88,43 +89,38 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
       className={`relative flex items-center justify-center w-full h-[100vh] overflow-hidden transition-colors duration-1000 ${bgColor}`}
     >
       
-      {/* 1. EL CANVAS SÓLIDO (z-20 para tapar los textos) */}
+      {/* 1. LA PARED SÓLIDA QUE SE BORRA (z-20) */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 z-20 pointer-events-none"
+        className="absolute inset-0 w-full h-full z-20 pointer-events-none"
       />
 
-      {/* 2. TEXTO PEQUEÑO ESTÁTICO (Fijo en el centro para anclar la vista) */}
-      <div className="absolute z-10 flex w-full justify-center top-[15vh] md:top-[20vh] pointer-events-none">
-        <p className={`text-sm md:text-base font-medium tracking-tighter opacity-70 ${crystalEffect}`}>
-          what we can build together
-        </p>
-      </div>
-
-      {/* 3. VERTICAL MARQUEE (El texto gigante desplazándose) */}
-      <div className="absolute z-0 flex flex-col items-center justify-center w-full h-full pointer-events-none overflow-hidden">
+      {/* 2. EL PÓSTER TIPOGRÁFICO DEBAJO (z-10 animado) */}
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }} // Se anima cuando bajás hasta acá
+        className="relative z-10 flex flex-col items-center justify-center w-full h-full pointer-events-none px-4"
+      >
         
-        {/* motion.div hace el loop infinito moviéndose del 0% al -50% (la mitad exacta) */}
-        <motion.div 
-          animate={{ y: ["0%", "-50%"] }}
-          transition={{ 
-            repeat: Infinity, 
-            ease: "linear", 
-            duration: 25 
-          }}
-          className="flex flex-col items-center gap-4 md:gap-8 pt-[50vh]"
-        >
-          {duplicatedServices.map((service, index) => (
-            <h2 
+        <motion.p variants={itemVariants} className={`text-sm md:text-base font-medium tracking-tighter uppercase mb-6 md:mb-12 opacity-70 ${crystalEffect}`}>
+          what we can build together
+        </motion.p>
+        
+        <div className="flex flex-col items-center justify-center w-full gap-2 md:gap-4">
+          {services.map((service, index) => (
+            <motion.h2 
               key={index}
-              className={`text-[12vw] md:text-[6vw] tracking-tighter leading-[0.6] text-center w-full whitespace-nowrap ${crystalEffect}`}
+              variants={itemVariants}
+              className={`text-[12vw] md:text-[7vw] tracking-tighter leading-[0.6] text-center w-full whitespace-nowrap ${crystalEffect}`}
             >
               {service}
-            </h2>
+            </motion.h2>
           ))}
-        </motion.div>
+        </div>
 
-      </div>
+      </motion.div>
 
     </section>
   );
