@@ -62,21 +62,27 @@ export default function Home() {
     }),
   };
 
-  // 🔥 LA MAGIA DEL OVERLAY (PARALLAX DEPTH)
-  // Monitoreamos cuándo la Sección 3 (Vision) entra a la pantalla
-  const visionRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: visionRef,
-    offset: ["start end", "start start"] // Desde que asoma por abajo, hasta que llega arriba
+  // 🔥 TREN HORIZONTAL (LÓGICA FLUIDA)
+  const trainRef = useRef<HTMLDivElement>(null);
+  
+  // start end = Cuando la parte de arriba del tren toca la parte de abajo de la pantalla
+  // end end = Cuando la parte de abajo del tren toca la parte de abajo de la pantalla
+  const { scrollYProgress: trainProgress } = useScroll({
+    target: trainRef,
+    offset: ["start end", "end end"] 
   });
 
-  // Hundimos la sección 2: Se achica a 0.92 y baja un poco para dar efecto de profundidad 3D
-  const scalePrevious = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
-  const yPrevious = useTransform(scrollYProgress, [0, 1], ["0vh", "5vh"]);
-  const opacityPrevious = useTransform(scrollYProgress, [0, 1], [1, 0.4]);
+  // MATEMÁTICA SIN PAUSAS:
+  // Del 0 al 0.5 (Mitad del scroll de esta sección): El tren se queda esperando, asomando 8px.
+  // Del 0.5 al 1.0: El tren corre hacia la izquierda a la par que vos scrolleás hacia abajo.
+  const trainX = useTransform(
+    trainProgress, 
+    [0, 0.5, 1], 
+    ["calc(100% - 8px)", "calc(100% - 8px)", "0%"]
+  );
 
   return (
-    <main className={`relative flex flex-col font-neue-haas transition-colors duration-500 bg-black`}>
+    <main className={`relative flex flex-col font-neue-haas transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]" : "bg-[#FAFAFA]"}`}>
       <Preloader />
 
       <motion.nav 
@@ -99,11 +105,8 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      {/* CONTENEDOR SECCIONES 1 Y 2: Se "hunde" (scale) cuando sube la sección 3 */}
-      <motion.div 
-        style={{ scale: scalePrevious, y: yPrevious, opacity: opacityPrevious }} 
-        className="origin-bottom relative w-full overflow-x-hidden z-10"
-      >
+      {/* CONTENEDOR SECCIONES 1 Y 2 */}
+      <div className="relative w-full overflow-x-hidden z-10">
         <div className={`transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B] text-[#FDCEDF]" : "bg-[#FAFAFA] text-[#E11D48]"}`}>
           <motion.div 
             className={`absolute top-0 bottom-0 left-[35.333%] w-[2px] z-50 pointer-events-none transition-all duration-500 ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}
@@ -112,7 +115,7 @@ export default function Home() {
             transition={{ duration: 1.5, delay: 1.8, ease: [0.76, 0, 0.24, 1] }}
           />
 
-          {/* sec 1 */}
+          {/* Sec 1 */}
           <section className={`relative flex flex-col h-screen p-6 md:p-10 z-10 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>       
             <div className="absolute bottom-4 -left-2 right-2 md:bottom-8 md:-left-[-1.8rem] md:right-10 z-0 pointer-events-none select-none">
               <h1 className={`flex flex-col w-full text-[26vw] md:text-[8vw] font-bold uppercase opacity-[0.16] md:opacity-[0.18] blur-[3px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
@@ -141,7 +144,7 @@ export default function Home() {
             </div>
           </section>
 
-          {/* sec 2 */}
+          {/* Sec 2 */}
           <section className={`relative flex flex-col justify-center min-h-[200vh] py-6 md:py-10 pb-[25vh] z-20 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>
             <motion.div className={`absolute left-0 right-0 top-0 h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
             <motion.div className={`absolute left-0 right-0 top-[30vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
@@ -171,11 +174,20 @@ export default function Home() {
             <motion.div className={`absolute left-0 right-0 bottom-[4vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "50px" }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
           </section>
         </div>
-      </motion.div>
+      </div>
       
-      {/* SECCIÓN 3: Entra pisando fuerte por encima (z-20) */}
-      <div ref={visionRef} className="relative z-20 w-full drop-shadow-2xl">
-        <VisionSection isDarkTheme={isDarkTheme} />
+      {/* 🔥 TREN HORIZONTAL (Sección 3) 
+          -mt-[100vh] lo ancla para que empiece a medir justo en el centro de tu Sec 2.
+          h-[200vh] le da la pista exacta de aterrizaje para que termine justo cuando vos terminás de bajar. */}
+      <div ref={trainRef} className="relative z-30 h-[200vh] -mt-[100vh] pointer-events-none">
+        <div className="sticky top-0 w-full h-screen overflow-hidden pointer-events-auto">
+          <motion.div 
+            style={{ x: trainX }}
+            className={`w-full h-full`}
+          >
+            <VisionSection isDarkTheme={isDarkTheme} />
+          </motion.div>
+        </div>
       </div>
 
     </main>
