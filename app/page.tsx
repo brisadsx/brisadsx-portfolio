@@ -3,10 +3,10 @@
 import Preloader from "../components/Preloader";
 import VisionSection from "../components/VisionSection";
 import { motion, Variants, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 
-const ScrambleLink = ({ href, target, underline, children, isDarkTheme }: { href: string; target?: string; underline?: boolean; children: string; isDarkTheme?: boolean }) => {
+const ScrambleLink = ({ href, target, underline, children, isDarkTheme, forceDarkText = false }: { href: string; target?: string; underline?: boolean; children: string; isDarkTheme?: boolean; forceDarkText?: boolean }) => {
   const [text, setText] = useState(children);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
@@ -24,8 +24,17 @@ const ScrambleLink = ({ href, target, underline, children, isDarkTheme }: { href
     setText(normalText);
   };
 
-  const hoverTextColor = isDarkTheme ? "hover:text-[#FDCEDF]/70" : "hover:text-[#E11D48]/50";
-  const decorationColor = isDarkTheme ? "decoration-[#FDCEDF]/70" : "decoration-[#E11D48]/50";
+  
+  const baseTextColorClass = forceDarkText ? "text-[#111111]" : "text-zinc-400";
+  
+  
+  let hoverTextColorClass = isDarkTheme ? "hover:text-[#FDCEDF]/70" : "hover:text-[#E11D48]/50";
+  let decorationColorClass = isDarkTheme ? "decoration-[#FDCEDF]/70" : "decoration-[#E11D48]/50";
+
+  if (forceDarkText) {
+      hoverTextColorClass = isDarkTheme ? "hover:text-[#FDCEDF]/70" : "hover:text-[#FAFAFA]/70";
+      decorationColorClass = isDarkTheme ? "decoration-[#FDCEDF]/70" : "decoration-[#FAFAFA]/70";
+  }
 
   return (
     <a
@@ -34,8 +43,8 @@ const ScrambleLink = ({ href, target, underline, children, isDarkTheme }: { href
       rel={target === "_blank" ? "noopener noreferrer" : undefined}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`text-zinc-400 transition-colors duration-300 font-medium cursor-pointer ${hoverTextColor} ${
-        underline ? `hover:underline decoration-2 underline-offset-[2px] ${decorationColor}` : ""
+      className={`${baseTextColorClass} transition-colors duration-300 font-medium cursor-pointer ${hoverTextColorClass} ${
+        underline ? `hover:underline decoration-2 underline-offset-[2px] ${decorationColorClass}` : ""
       }`}
     >
       {text}
@@ -62,50 +71,61 @@ export default function Home() {
     }),
   };
 
-  // 🔥 TREN HORIZONTAL (LÓGICA FLUIDA)
   const trainRef = useRef<HTMLDivElement>(null);
-  
-  // start end = Cuando la parte de arriba del tren toca la parte de abajo de la pantalla
-  // end end = Cuando la parte de abajo del tren toca la parte de abajo de la pantalla
   const { scrollYProgress: trainProgress } = useScroll({
     target: trainRef,
     offset: ["start end", "end end"] 
   });
 
-  // MATEMÁTICA SIN PAUSAS:
-  // Del 0 al 0.5 (Mitad del scroll de esta sección): El tren se queda esperando, asomando 8px.
-  // Del 0.5 al 1.0: El tren corre hacia la izquierda a la par que vos scrolleás hacia abajo.
   const trainX = useTransform(
     trainProgress, 
     [0, 0.5, 1], 
     ["calc(100% - 8px)", "calc(100% - 8px)", "0%"]
   );
 
+  
+  const [navOnVision, setNavOnVision] = useState(false);
+
+  useEffect(() => {
+    // Escuchamos el progreso del scroll horizontal
+    const unsubscribe = trainProgress.on("change", (latest) => {
+      // Cuando el telón cubre más del 80% de la pantalla, activamos el modo adaptive
+      if (latest >= 0.8) {
+        setNavOnVision(true);
+      } else {
+        setNavOnVision(false);
+      }
+    });
+    return () => unsubscribe();
+  }, [trainProgress]);
+
   return (
     <main className={`relative flex flex-col font-neue-haas transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]" : "bg-[#FAFAFA]"}`}>
       <Preloader />
 
+      {/* Nav is z-50 (Siempre arriba de todo) */}
       <motion.nav 
         className="fixed top-0 left-0 w-full pt-4 px-6 md:pt-6 md:px-10 z-50 grid grid-cols-3 items-start text-base md:text-[1.5rem] tracking-[0.2em] font-bold bg-transparent"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.8 }} 
       >
         <div className="flex justify-start tracking-tighter">
-            <ScrambleLink href="#" isDarkTheme={isDarkTheme}>brisadsx</ScrambleLink>
+            {/* Pasamos navOnVision para forzar texto oscuro */}
+            <ScrambleLink href="#" isDarkTheme={isDarkTheme} forceDarkText={navOnVision}>brisadsx</ScrambleLink>
         </div>
         <div className="flex justify-start items-center tracking-tighter relative">
             <button onClick={toggleTheme} className={`absolute -left-[40px] w-3.5 h-3.5 hover:rotate-90 transition-transform duration-300 ${isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#E11D48]/50"}`} aria-label="Alternar tema oscuro/claro" />
             <div className="ml-[190px]">
-                <ScrambleLink href="#" isDarkTheme={isDarkTheme}>about</ScrambleLink>
+                <ScrambleLink href="#" isDarkTheme={isDarkTheme} forceDarkText={navOnVision}>about</ScrambleLink>
             </div>
         </div>
         <div className="flex justify-end gap-4 md:gap-8 tracking-tighter">
-          <ScrambleLink href="https://www.linkedin.com/in/brisa-gabriela/" target="_blank" underline isDarkTheme={isDarkTheme}>in</ScrambleLink>
-          <ScrambleLink href="https://github.com/brisadsx" target="_blank" underline isDarkTheme={isDarkTheme}>git</ScrambleLink>
-          <ScrambleLink href="mailto:brisadsx@gmail.com" underline isDarkTheme={isDarkTheme}>mail</ScrambleLink>
+          <ScrambleLink href="https://www.linkedin.com/in/brisa-gabriela/" target="_blank" underline isDarkTheme={isDarkTheme} forceDarkText={navOnVision}>in</ScrambleLink>
+          <ScrambleLink href="https://github.com/brisadsx" target="_blank" underline isDarkTheme={isDarkTheme} forceDarkText={navOnVision}>git</ScrambleLink>
+          <ScrambleLink href="mailto:brisadsx@gmail.com" underline isDarkTheme={isDarkTheme} forceDarkText={navOnVision}>mail</ScrambleLink>
         </div>
       </motion.nav>
 
-      {/* CONTENEDOR SECCIONES 1 Y 2 */}
+      {/* Sections 1 & 2 are z-10 */}
       <div className="relative w-full overflow-x-hidden z-10">
         <div className={`transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B] text-[#FDCEDF]" : "bg-[#FAFAFA] text-[#E11D48]"}`}>
           <motion.div 
@@ -115,7 +135,6 @@ export default function Home() {
             transition={{ duration: 1.5, delay: 1.8, ease: [0.76, 0, 0.24, 1] }}
           />
 
-          {/* Sec 1 */}
           <section className={`relative flex flex-col h-screen p-6 md:p-10 z-10 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>       
             <div className="absolute bottom-4 -left-2 right-2 md:bottom-8 md:-left-[-1.8rem] md:right-10 z-0 pointer-events-none select-none">
               <h1 className={`flex flex-col w-full text-[26vw] md:text-[8vw] font-bold uppercase opacity-[0.16] md:opacity-[0.18] blur-[3px] tracking-[-0.5rem] leading-[0.8] transition-colors duration-500 ${isDarkTheme ? "text-zinc-100" : "text-zinc-900"}`}>
@@ -144,7 +163,6 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Sec 2 */}
           <section className={`relative flex flex-col justify-center min-h-[200vh] py-6 md:py-10 pb-[25vh] z-20 backdrop-blur-sm transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]/40" : "bg-[#F9F5F6]/40"}`}>
             <motion.div className={`absolute left-0 right-0 top-0 h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
             <motion.div className={`absolute left-0 right-0 top-[30vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
@@ -170,20 +188,18 @@ export default function Home() {
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }} className={`mt-10 self-end mr-[15vw] md:mr-[55vw] text-left text-base md:text-xl tracking-tighter leading-[1.1] max-w-sm md:max-w-md transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}>bridging the gap between<br />robust software architecture<br />and intuitive digital design.<br />turning deep complexity<br />into invisible logic,<br />focusing on every detail<br />to build web experiences<br />that are not just functional,<br />but genuinely a joy to use.</motion.p>
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1, delay: 0.6 }} className={`mt-[30vh] md:mt-[30vh] mb-[16vh] md:mb-[6vh] pr-4 md:pr-8 flex flex-row items-center justify-end gap-2 md:gap-6 text-[18vw] sm:text-[14vw] md:text-[10vw] tracking-[-0.08em] leading-none transition-all duration-500 ${isDarkTheme ? "text-[#FDCEDF]/70 mix-blend-screen" : "text-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`}><span>est.&apos;26</span><span className="px-8 md:px-38">—</span><span>bg®</span></motion.div>
             </div>
-            <motion.div className={`absolute left-0 right-0 bottom-[15vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
-            <motion.div className={`absolute left-0 right-0 bottom-[4vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "50px" }} transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }} />
+            <motion.div className={`absolute left-0 right-0 bottom-[15vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1.5, delay: 0.6, ease: [0.76, 0, 0.24, 1] }} />
+            <motion.div className={`absolute left-0 right-0 bottom-[4vh] h-[2px] w-full z-30 transition-all duration-500 origin-left ${isDarkTheme ? "bg-[#FDCEDF]/70 mix-blend-screen" : "bg-[#E11D48]/50 mix-blend-multiply drop-shadow-[0_1px_2px_rgba(253,206,223,0.8)]"}`} initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "50px" }} transition={{ duration: 1.5, delay: 0.6, ease: [0.76, 0, 0.24, 1] }} />
           </section>
         </div>
       </div>
       
-      {/* 🔥 TREN HORIZONTAL (Sección 3) 
-          -mt-[100vh] lo ancla para que empiece a medir justo en el centro de tu Sec 2.
-          h-[200vh] le da la pista exacta de aterrizaje para que termine justo cuando vos terminás de bajar. */}
+      {/* Vision sliding block is z-30 */}
       <div ref={trainRef} className="relative z-30 h-[200vh] -mt-[100vh] pointer-events-none">
         <div className="sticky top-0 w-full h-screen overflow-hidden pointer-events-auto">
           <motion.div 
             style={{ x: trainX }}
-            className={`w-full h-full`}
+            className={`w-full h-full shadow-[-10px_0_40px_rgba(0,0,0,0.4)]`}
           >
             <VisionSection isDarkTheme={isDarkTheme} />
           </motion.div>

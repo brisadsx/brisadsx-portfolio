@@ -99,8 +99,8 @@ const CyclingText = ({
 
 export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean }) {
   
-  const bgColor = isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#E11D48]/50";
-  const textColor = isDarkTheme ? "text-[#09090B]" : "text-[#FAFAFA]";
+  const bgColor = isDarkTheme ? "bg-[#FDCEDF]/86" : "bg-[#E11D48]/50";
+  const textColor = isDarkTheme ? "text-[#111111]" : "text-[#FAFAFA]";
 
   const baseServices = [
     "Digital Experiences",
