@@ -6,6 +6,7 @@ import { motion, Variants, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 
+
 const ScrambleLink = ({ href, target, underline, children, isDarkTheme, forceDarkText = false }: { href: string; target?: string; underline?: boolean; children: string; isDarkTheme?: boolean; forceDarkText?: boolean }) => {
   const [text, setText] = useState(children);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -24,16 +25,23 @@ const ScrambleLink = ({ href, target, underline, children, isDarkTheme, forceDar
     setText(normalText);
   };
 
-  
-  const baseTextColorClass = forceDarkText ? "text-[#111111]" : "text-zinc-400";
-  
-  
+  let baseTextColorClass = "text-zinc-400";
   let hoverTextColorClass = isDarkTheme ? "hover:text-[#FDCEDF]/70" : "hover:text-[#E11D48]/50";
   let decorationColorClass = isDarkTheme ? "decoration-[#FDCEDF]/70" : "decoration-[#E11D48]/50";
 
+  
   if (forceDarkText) {
-      hoverTextColorClass = isDarkTheme ? "hover:text-[#FDCEDF]/70" : "hover:text-[#FAFAFA]/70";
-      decorationColorClass = isDarkTheme ? "decoration-[#FDCEDF]/70" : "decoration-[#FAFAFA]/70";
+    if (isDarkTheme) {
+     
+      baseTextColorClass = "text-[#111111]/60";
+      hoverTextColorClass = "hover:text-[#111111]";
+      decorationColorClass = "decoration-[#111111]/80";
+    } else {
+
+      baseTextColorClass = "text-[#FAFAFA]/60";
+      hoverTextColorClass = "hover:text-[#FAFAFA]/80";
+      decorationColorClass = "decoration-[#FAFAFA]";
+    }
   }
 
   return (
@@ -87,10 +95,8 @@ export default function Home() {
   const [navOnVision, setNavOnVision] = useState(false);
 
   useEffect(() => {
-    // Escuchamos el progreso del scroll horizontal
     const unsubscribe = trainProgress.on("change", (latest) => {
-      // Cuando el telón cubre más del 80% de la pantalla, activamos el modo adaptive
-      if (latest >= 0.8) {
+      if (latest >= 0.8 && latest <= 1.0) {
         setNavOnVision(true);
       } else {
         setNavOnVision(false);
@@ -205,6 +211,8 @@ export default function Home() {
           </motion.div>
         </div>
       </div>
+
+      
 
     </main>
   );

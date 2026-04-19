@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 
-// --- COMPONENTE 1: MÁQUINA DE ESCRIBIR ---
 const TypewriterText = ({ text, className }: { text: string, className: string }) => {
   const letters = Array.from(text);
   
@@ -37,7 +36,7 @@ const TypewriterText = ({ text, className }: { text: string, className: string }
   );
 };
 
-// --- COMPONENTE 2: CICLO DE PALABRAS INTELIGENTE (SIN REPETIDOS) ---
+
 const CyclingText = ({ 
   initialWord, 
   pool, 
@@ -53,18 +52,16 @@ const CyclingText = ({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // 1. Filtramos el pool para sacar las palabras que YA están en la pantalla
+      
       const availableWords = pool.filter(w => !activeWordsRef.current.has(w));
       
       if (availableWords.length > 0) {
-        // 2. Elegimos una nueva de las disponibles
-        const randomWord = availableWords[Math.floor(Math.random() * availableWords.length)];
         
-        // 3. Actualizamos el "Cerebro Central" (sacamos la vieja, metemos la nueva)
+        const randomWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+         
         activeWordsRef.current.delete(currentWord);
         activeWordsRef.current.add(randomWord);
         
-        // 4. Actualizamos la pantalla
         setCurrentWord(randomWord);
       }
     }, Math.random() * 2500 + 2500); 
@@ -74,12 +71,11 @@ const CyclingText = ({
 
   return (
     <div className="relative flex justify-center w-full">
-      {/* EL FANTASMA: Mantiene la caja abierta para que no se pisen los textos */}
       <h2 className={`${className} opacity-0 pointer-events-none select-none`}>
         {initialWord}
       </h2>
 
-      {/* TEXTO ANIMADO CON BLUR */}
+      
       <AnimatePresence mode="popLayout">
         <motion.h2
           key={currentWord}
@@ -121,10 +117,10 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
     "Brand Guidelines"
   ];
 
-  // Agrupamos TODAS las palabras posibles en un solo array
+
   const fullPool = [...baseServices, ...extraServicesPool];
   
-  // EL CEREBRO CENTRAL: Guarda qué palabras están mostrándose ahora mismo
+ 
   const activeWordsRef = useRef<Set<string>>(new Set(baseServices));
 
   const containerVariants: Variants = {
