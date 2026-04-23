@@ -16,7 +16,7 @@ export default function Preloader() {
   }, []);
 
 
-  const bgColor = isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#E11D48]/50";
+  const bgColor = isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#FF8FAB]/80";
   const textColor = isDarkTheme ? "text-[#09090B]" : "text-[#F9F5F6]";
 
   return (

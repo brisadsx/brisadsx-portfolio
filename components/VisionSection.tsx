@@ -95,7 +95,7 @@ const CyclingText = ({
 
 export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean }) {
   
-  const bgColor = isDarkTheme ? "bg-[#FDCEDF]/86" : "bg-[#E11D48]/50";
+  const bgColor = isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#FF8FAB]/80";
   const textColor = isDarkTheme ? "text-[#111111]" : "text-[#FAFAFA]";
 
   const baseServices = [
@@ -117,10 +117,9 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
     "Brand Guidelines"
   ];
 
-
   const fullPool = [...baseServices, ...extraServicesPool];
   
- 
+
   const activeWordsRef = useRef<Set<string>>(new Set(baseServices));
 
   const containerVariants: Variants = {
@@ -147,27 +146,25 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
         className="relative z-10 flex flex-col items-center justify-center w-full h-full pointer-events-none px-4"
       >
         
-        {/* TEXTO TYPEWRITER (Uppercase removido, tracking apretado) */}
         <TypewriterText 
           text="What we can build together" 
           className={`text-xl md:text-3xl font-medium tracking-tighter mb-10 md:mb-16 opacity-80 ${textColor}`}
         />
         
-        {/* LISTA MUTANTE INTELIGENTE */}
         <div className="flex flex-col items-center justify-center w-full gap-2 md:gap-4 mb-10 md:mb-14">
           {baseServices.map((service, index) => (
             <motion.div key={index} variants={itemVariants} className="w-full">
               <CyclingText 
                 initialWord={service} 
                 pool={fullPool} 
-                activeWordsRef={activeWordsRef} // Le pasamos el cerebro a cada línea
+                activeWordsRef={activeWordsRef} 
                 className={`text-[12vw] md:text-[5vw] font-bold tracking-tighter leading-[0.6] text-center w-full whitespace-nowrap ${textColor}`}
               />
             </motion.div>
           ))}
         </div>
 
-        {/* MORE + (Lowercase, más sutil y pegado) */}
+        
         <motion.div
           variants={itemVariants}
           animate={{ opacity: [0.3, 0.8, 0.3] }}

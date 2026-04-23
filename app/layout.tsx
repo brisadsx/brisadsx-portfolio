@@ -3,25 +3,18 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "../context/ThemeContext"; 
 
-const neueHaas = localFont({
-  src: [
-    {
-      path: "./fonts/neue-haas.ttf",
-      weight: "400", // Peso normal
-      style: "normal",
-    },
-    {
-      path: "./fonts/neue-haasbold.ttf",
-      weight: "700", // Peso bold
-      style: "normal",
-    }
-  ],
-  variable: "--font-neue-haas",
+
+const helveticaNeue = localFont({
+  src: "./fonts/helvetica-neue.otf", 
+  variable: "--font-helvetica",
+  weight: "400",
+  style: "normal",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Brisa Gabriela | Creative Technologist",
-  description: "",
+  description: "Portfolio of Brisa Gabriela",
 };
 
 export default function RootLayout({
@@ -30,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    
-    <html lang="es" className={`${neueHaas.variable} font-sans`}>
+    // Aplicamos la variable al HTML
+    <html lang="es" className={`${helveticaNeue.variable}`}>
       <body className="antialiased">
         <ThemeProvider>
           {children}
