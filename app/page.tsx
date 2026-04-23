@@ -28,14 +28,15 @@ const ScrambleLink = ({ href, target, onClick, underline, children, isDarkTheme,
   let hoverTextColorClass = isDarkTheme ? "hover:text-[#FDCEDF]/80" : "hover:text-[#FF8FAB]/80";
   let decorationColorClass = isDarkTheme ? "decoration-[#FDCEDF]/80" : "decoration-[#FF8FAB]/80";
 
+  // Lógica para forzar el contraste cuando se está en la VisionSection
   if (forceDarkText) {
     if (isDarkTheme) {
-      baseTextColorClass = "text-[#111111]/60";
+      baseTextColorClass = "text-[#111111]/80"; // Negro/gris oscuro para resaltar sobre el rosa pastel oscuro
       hoverTextColorClass = "hover:text-[#111111]";
       decorationColorClass = "decoration-[#111111]/80";
     } else {
-      baseTextColorClass = "text-[#FAFAFA]/60";
-      hoverTextColorClass = "hover:text-[#FAFAFA]/80";
+      baseTextColorClass = "text-[#FAFAFA]/80"; // Blanco para resaltar sobre el rosa vibrante claro
+      hoverTextColorClass = "hover:text-[#FAFAFA]";
       decorationColorClass = "decoration-[#FAFAFA]";
     }
   }
@@ -63,6 +64,9 @@ export default function Home() {
   const { isDarkTheme, toggleTheme } = useTheme(); 
 
   const [isHeroActive, setIsHeroActive] = useState(true);
+  
+  // 🔥 NUEVO ESTADO: Rastrea si el usuario está viendo la VisionSection
+  const [isInVision, setIsInVision] = useState(false);
 
   useEffect(() => {
     if (isHeroActive) {
@@ -82,6 +86,7 @@ export default function Home() {
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsHeroActive(true); 
+    setIsInVision(false); // Resetea el estado al volver al hero
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -97,7 +102,6 @@ export default function Home() {
     })
   };
 
-  // --- HOVER REVEAL VIDEO ---
   const [isHoveringName, setIsHoveringName] = useState(false);
   const cursorX = useSpring(0, { stiffness: 300, damping: 30 });
   const cursorY = useSpring(0, { stiffness: 300, damping: 30 });
@@ -113,40 +117,40 @@ export default function Home() {
 
   const heroTextColor = isDarkTheme ? "text-[#FDCEDF]" : "text-[#FF8FAB]"; 
   const heroBgColor = isDarkTheme ? "bg-[#09090B]" : "bg-[#fcfbf9]";
+  
+  // Color del botón de tema adaptable
+  const themeButtonColor = isInVision 
+    ? (isDarkTheme ? "bg-[#111111]/80" : "bg-[#FAFAFA]/80")
+    : (isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#FF8FAB]/80");
 
   return (
-    
     <main className={`relative flex flex-col overflow-x-hidden transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]" : "bg-[#FAFAFA]"}`}>
       <Preloader />
 
       {/* NAVBAR */}
       <motion.nav 
-        className="fixed top-0 left-0 w-full pt-4 px-6 md:pt-6 md:px-10 z-50 grid grid-cols-3 items-start text-base md:text-[1.5rem] tracking-[0.2em] font-bold bg-transparent pointer-events-auto"
+        className="fixed top-0 left-0 w-full pt-4 px-6 md:pt-6 md:px-10 z-50 grid grid-cols-3 items-start text-base md:text-[1.5rem] tracking-[0.2em] font-bold bg-transparent pointer-events-auto transition-colors duration-500"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.8 }} 
       >
         <div className="flex justify-start tracking-tighter">
-            <ScrambleLink href="#" onClick={handleLogoClick} isDarkTheme={isDarkTheme}>brisadsx</ScrambleLink>
+            <ScrambleLink href="#" onClick={handleLogoClick} isDarkTheme={isDarkTheme} forceDarkText={isInVision}>brisadsx</ScrambleLink>
         </div>
         <div className="flex justify-start items-center tracking-tighter relative">
-            <button onClick={toggleTheme} className={`absolute -left-[40px] w-3.5 h-3.5 hover:rotate-90 transition-transform duration-300 ${isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#FF8FAB]/80"}`} aria-label="Alternar tema oscuro/claro" />
+            <button onClick={toggleTheme} className={`absolute -left-[40px] w-3.5 h-3.5 hover:rotate-90 transition-all duration-500 ${themeButtonColor}`} aria-label="Alternar tema oscuro/claro" />
             <div className="ml-[190px]">
-                <ScrambleLink href="#" isDarkTheme={isDarkTheme}>about</ScrambleLink>
+                <ScrambleLink href="#" isDarkTheme={isDarkTheme} forceDarkText={isInVision}>about</ScrambleLink>
             </div>
         </div>
         <div className="flex justify-end gap-4 md:gap-8 tracking-tighter">
-          <ScrambleLink href="https://www.linkedin.com/in/brisa-gabriela/" target="_blank" underline isDarkTheme={isDarkTheme}>in</ScrambleLink>
-          <ScrambleLink href="https://github.com/brisadsx" target="_blank" underline isDarkTheme={isDarkTheme}>git</ScrambleLink>
-          <ScrambleLink href="mailto:brisadsx@gmail.com" underline isDarkTheme={isDarkTheme}>mail</ScrambleLink>
+          <ScrambleLink href="https://www.linkedin.com/in/brisa-gabriela/" target="_blank" underline isDarkTheme={isDarkTheme} forceDarkText={isInVision}>in</ScrambleLink>
+          <ScrambleLink href="https://github.com/brisadsx" target="_blank" underline isDarkTheme={isDarkTheme} forceDarkText={isInVision}>git</ScrambleLink>
+          <ScrambleLink href="mailto:brisadsx@gmail.com" underline isDarkTheme={isDarkTheme} forceDarkText={isInVision}>mail</ScrambleLink>
         </div>
       </motion.nav>
 
-      
       <motion.div 
-        className={`fixed inset-0 z-40 w-screen h-screen ${heroBgColor} flex items-center origin-left ]`}
-        animate={{ 
-          x: isHeroActive ? "0%" : "-100%", 
-          
-        }}
+        className={`fixed inset-0 z-40 w-screen h-screen ${heroBgColor} flex items-center origin-left`}
+        animate={{ x: isHeroActive ? "0%" : "-100%" }}
         transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1] }}
         ref={heroRef} onMouseMove={handleMouseMove}
       >
@@ -161,7 +165,6 @@ export default function Home() {
 
         <div className="w-full h-full flex flex-col md:flex-row items-center justify-between px-[5vw] md:px-[10vw]">
           
-        
           <div 
             className="flex flex-col items-start z-10 cursor-default"
             onMouseEnter={() => setIsHoveringName(true)}
@@ -211,7 +214,7 @@ export default function Home() {
         animate={{ x: isHeroActive ? "100%" : "0%" }}
         transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1] }}
       >
-        <WorksSection isDarkTheme={isDarkTheme} />
+        <WorksSection isDarkTheme={isDarkTheme} onVisionEnter={setIsInVision} />
       </motion.div>
 
     </main>

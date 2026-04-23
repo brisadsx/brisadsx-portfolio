@@ -25,7 +25,7 @@ const projects: Project[] = [
     id: 1, 
     name: "Dear Music, Thanks", 
     role: "Creative Technologist", 
-    image: "/images/proyect1.png", 
+    image: "/images/proyect1.png",
     link: "https://dear-music-thanks.vercel.app/",
     flex: "flex-[1]" 
   },
@@ -33,7 +33,7 @@ const projects: Project[] = [
     id: 2, 
     name: "Bseth Bags", 
     role: "Product Designer", 
-    image: "/images/proyect3.png", 
+    image: "/images/proyect3.png",
     link: "https://bseth-intro.vercel.app/",
     flex: "flex-[1]" 
   },
@@ -41,12 +41,11 @@ const projects: Project[] = [
     id: 3, 
     name: "Saylo", 
     role: "3D Web Developer", 
-    image: "/images/proyect2.png", 
+    image: "/images/proyect2.png",
     link: "https://saylo-legacy.vercel.app/",
     flex: "flex-[1.6]" 
   },
 ];
-
 
 function ProjectCard({ project, isDarkTheme, secondaryTextColor }: ProjectCardProps) {
   const cardRef = useRef<HTMLAnchorElement>(null);
@@ -59,7 +58,7 @@ function ProjectCard({ project, isDarkTheme, secondaryTextColor }: ProjectCardPr
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     
-    
+    // Proporción idéntica a la imagen padre
     const cursorW = rect.width * 0.3;
     const cursorH = rect.height * 0.3;
     
@@ -78,7 +77,6 @@ function ProjectCard({ project, isDarkTheme, secondaryTextColor }: ProjectCardPr
       onMouseLeave={() => setIsHovered(false)}
       onMouseMove={handleMouseMove}
     >
-      
       <div className="w-full h-full overflow-hidden relative">
         <Image 
           src={project.image} 
@@ -94,7 +92,6 @@ function ProjectCard({ project, isDarkTheme, secondaryTextColor }: ProjectCardPr
           transition={{ opacity: { duration: 0.2 }, scale: { duration: 0.2 } }}
           className="absolute top-0 left-0 w-[30%] h-[30%] pointer-events-none z-50 shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden"
         >
-          
           <Image 
             src={project.image} 
             alt="Hover preview" 
@@ -117,44 +114,54 @@ function ProjectCard({ project, isDarkTheme, secondaryTextColor }: ProjectCardPr
   );
 }
 
-export default function WorksSection({ isDarkTheme }: { isDarkTheme: boolean }) {
+// 🔥 Modificamos las props para recibir onVisionEnter
+export default function WorksSection({ isDarkTheme, onVisionEnter }: { isDarkTheme: boolean, onVisionEnter?: (isInVision: boolean) => void }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  
-  
   const isScrolling = useRef(false);
 
-  
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
+    // Función para verificar la posición del scroll
+    const checkScrollPosition = () => {
+      // Si hemos scrolleado más allá de la mitad de la pantalla, estamos en VisionSection
+      if (container.scrollLeft > window.innerWidth * 0.5) {
+        if (onVisionEnter) onVisionEnter(true);
+      } else {
+        if (onVisionEnter) onVisionEnter(false);
+      }
+    };
+
+    // Escuchamos el evento de scroll nativo
+    container.addEventListener("scroll", checkScrollPosition);
+
     const handleWheel = (e: WheelEvent) => {
-      
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-      
       e.preventDefault();
 
       if (isScrolling.current) return;
 
       if (e.deltaY > 0) {
-        // Scrolleando hacia abajo -> Ir a la derecha
         isScrolling.current = true;
         container.scrollBy({ left: window.innerWidth, behavior: "smooth" });
       } else if (e.deltaY < 0) {
-        // Scrolleando hacia arriba -> Ir a la izquierda
         isScrolling.current = true;
         container.scrollBy({ left: -window.innerWidth, behavior: "smooth" });
       }
 
-      // Liberar el bloqueo de scroll después de la animación (aprox 600ms)
       setTimeout(() => {
         isScrolling.current = false;
       }, 600);
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
-    return () => container.removeEventListener("wheel", handleWheel);
-  }, []);
+    
+    return () => {
+      container.removeEventListener("wheel", handleWheel);
+      container.removeEventListener("scroll", checkScrollPosition);
+    };
+  }, [onVisionEnter]);
 
   const textColor = isDarkTheme ? "text-[#FDCEDF]" : "text-[#FF8FAB]"; 
   const secondaryTextColor = isDarkTheme ? "text-zinc-400" : "text-zinc-500";
