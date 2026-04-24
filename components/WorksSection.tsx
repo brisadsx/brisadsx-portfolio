@@ -138,6 +138,18 @@ export default function WorksSection({ isDarkTheme, onVisionEnter }: { isDarkThe
 
     const handleWheel = (e: WheelEvent) => {
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      
+      // 🔥 FIX: Detectamos si estamos en los extremos (con margen de 5px)
+      const isAtEnd = container.scrollLeft >= container.scrollWidth - container.clientWidth - 5;
+      const isAtStart = container.scrollLeft <= 5;
+
+      // Si intentamos scrollear hacia abajo y ya estamos en el final, liberamos el scroll
+      if (e.deltaY > 0 && isAtEnd) return;
+      
+      // Si intentamos scrollear hacia arriba y ya estamos en el inicio, liberamos el scroll
+      if (e.deltaY < 0 && isAtStart) return;
+
+      // Si estamos en medio, prevenimos el comportamiento por defecto y controlamos el scroll
       e.preventDefault();
 
       if (isScrolling.current) return;
@@ -169,6 +181,8 @@ export default function WorksSection({ isDarkTheme, onVisionEnter }: { isDarkThe
   return (
     <section 
       ref={scrollContainerRef} 
+      // 🔥 FIX: h-screen cambiado a h-[100svh] (o podes dejar h-screen pero asegurate
+      // que el contenedor padre en page.tsx tenga overflow-y-auto)
       className={`relative w-screen h-screen flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth ${isDarkTheme ? "bg-[#09090B]" : "bg-[#FAFAFA]"}`}
       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
     >

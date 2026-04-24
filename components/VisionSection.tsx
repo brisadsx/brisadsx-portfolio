@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 const TypewriterText = ({ text, className }: { text: string, className: string }) => {
   const letters = Array.from(text);
@@ -100,21 +101,21 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
 
   const baseServices = [
     "Digital Experiences",
-    "eCommerce Platforms",
+    "Creative Direction",
     "3D Web Environments",
     "Interactive Portfolios",
-    "Landing Pages"
+    "Web Applications"
   ];
 
   const extraServicesPool = [
-    "SaaS Dashboards",
     "Art Direction",
     "Design Systems",
     "Web Animations",
     "Prototyping",
-    "Mobile Interfaces",
-    "Technical Architecture",
-    "Brand Guidelines"
+    "Frontend Architecture",
+    "eCommerce Platforms", 
+    "Brand Guidelines",
+    "Technical Consulting"
   ];
 
   const fullPool = [...baseServices, ...extraServicesPool];
@@ -151,7 +152,7 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
           className={`text-xl md:text-3xl font-medium tracking-tighter mb-10 md:mb-16 opacity-80 ${textColor}`}
         />
         
-        <div className="flex flex-col items-center justify-center w-full gap-2 md:gap-4 mb-10 md:mb-14">
+        <div className="flex flex-col items-center justify-center w-full gap-2 md:gap-4 mb-4 md:mb-8">
           {baseServices.map((service, index) => (
             <motion.div key={index} variants={itemVariants} className="w-full">
               <CyclingText 
@@ -164,19 +165,27 @@ export default function VisionSection({ isDarkTheme }: { isDarkTheme: boolean })
           ))}
         </div>
 
-        
+        {/* 🔥 2. Quitamos el mt-20 gigante, ponemos pointer-events-auto y ajustamos la línea */}
         <motion.div
           variants={itemVariants}
-          animate={{ opacity: [0.3, 0.8, 0.3] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="mt-2 md:mt-4 pointer-events-auto"
         >
-          <p className={`text-[9vw] md:text-[3vw] font-medium tracking-tighter opacity-70 ${textColor}`}>
-            More +
-          </p>
+          {/* inline-flex ayuda a que la línea de subrayado mida exactamente lo mismo que el texto */}
+          <Link href="/contact" className="group relative inline-flex flex-col items-center">
+            
+            {/* Hice el texto un poquito más chico (text-[2.5vw]) para que parezca más un botón */}
+            <span className={`text-[6vw] md:text-[2.5vw] font-medium tracking-tighter ${textColor} transition-opacity duration-300 group-hover:opacity-100 opacity-80 pb-1`}>
+              Let&apos;s build it →
+            </span>
+            
+            {/* Usamos absolute bottom-0 para que la línea no mueva el diseño al aparecer */}
+            <div 
+              className={`h-[2px] w-0 group-hover:w-full transition-all duration-500 absolute bottom-0 ${isDarkTheme ? 'bg-[#111111]' : 'bg-[#FAFAFA]'}`}
+            />
+          </Link>
         </motion.div>
 
       </motion.div>
-
     </section>
   );
 }

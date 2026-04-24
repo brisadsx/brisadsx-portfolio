@@ -2,70 +2,16 @@
 
 import Preloader from "../components/Preloader";
 import WorksSection from "../components/WorksSection"; 
+import Navbar, { ScrambleLink } from "../components/Navbar";
 import { motion, useSpring, Variants, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 
-const ScrambleLink = ({ href, target, onClick, underline, children, isDarkTheme, forceDarkText = false }: { href: string; target?: string; onClick?: (e: React.MouseEvent) => void; underline?: boolean; children: string; isDarkTheme?: boolean; forceDarkText?: boolean }) => {
-  const [text, setText] = useState(children);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
-  const normalText = children;
-  const reversedText = children.split("").reverse().join("");
-
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setText(reversedText);
-    timeoutRef.current = setTimeout(() => { setText(normalText); }, 150); 
-  };
-
-  const handleMouseLeave = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setText(normalText);
-  };
-
-  let baseTextColorClass = "text-zinc-400";
-  let hoverTextColorClass = isDarkTheme ? "hover:text-[#FDCEDF]/80" : "hover:text-[#FF8FAB]/80";
-  let decorationColorClass = isDarkTheme ? "decoration-[#FDCEDF]/80" : "decoration-[#FF8FAB]/80";
-
-  // Lógica para forzar el contraste cuando se está en la VisionSection
-  if (forceDarkText) {
-    if (isDarkTheme) {
-      baseTextColorClass = "text-[#111111]/80"; // Negro/gris oscuro para resaltar sobre el rosa pastel oscuro
-      hoverTextColorClass = "hover:text-[#111111]";
-      decorationColorClass = "decoration-[#111111]/80";
-    } else {
-      baseTextColorClass = "text-[#FAFAFA]/80"; // Blanco para resaltar sobre el rosa vibrante claro
-      hoverTextColorClass = "hover:text-[#FAFAFA]";
-      decorationColorClass = "decoration-[#FAFAFA]";
-    }
-  }
-
-  return (
-    <a
-      href={href}
-      target={target}
-      rel={target === "_blank" ? "noopener noreferrer" : undefined}
-      onClick={onClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className={`${baseTextColorClass} transition-colors duration-300 font-medium cursor-pointer ${hoverTextColorClass} ${
-        underline ? `hover:underline decoration-2 underline-offset-[2px] ${decorationColorClass}` : ""
-      }`}
-    >
-      {text}
-    </a>
-  );
-};
-
 const scrollDelays = [0.1, 0.35, 0.05, 0.4, 0.2, 0.5, 0.15, 0.25, 0.45, 0.0, 0.3, 0.55];
 
 export default function Home() {
-  const { isDarkTheme, toggleTheme } = useTheme(); 
-
+  const { isDarkTheme } = useTheme(); 
   const [isHeroActive, setIsHeroActive] = useState(true);
-  
-  // 🔥 NUEVO ESTADO: Rastrea si el usuario está viendo la VisionSection
   const [isInVision, setIsInVision] = useState(false);
 
   useEffect(() => {
@@ -83,14 +29,15 @@ export default function Home() {
     setIsHeroActive(false); 
   };
 
+  // Esta función se la pasamos al Navbar
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsHeroActive(true); 
-    setIsInVision(false); // Resetea el estado al volver al hero
+    setIsInVision(false); 
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const paragraphText = "I believe creativity isn't just a skill, it's a mindset. Born from a passion for bold ideas and beautifully crafted storytelling, I collaborate with visionary clients to shape identities at the intersection of art and innovation.";
+  const paragraphText = "I believe creativity isn't just a skill, it's a mindset. Born from a passion for bold ideas and beautifully crafted code, my focus is on building digital experiences at the intersection of art and innovation.";
   const words = paragraphText.split(" ");
 
   const boomVariants: Variants = {
@@ -98,7 +45,7 @@ export default function Home() {
     visible: (delay: number) => ({
       opacity: 1, 
       filter: "blur(0px)",
-      transition: { delay: delay, duration: 0.03, ease: "linear" }
+      transition: { delay: delay + 1.0, duration: 0.03, ease: "linear" }
     })
   };
 
@@ -117,36 +64,21 @@ export default function Home() {
 
   const heroTextColor = isDarkTheme ? "text-[#FDCEDF]" : "text-[#FF8FAB]"; 
   const heroBgColor = isDarkTheme ? "bg-[#09090B]" : "bg-[#fcfbf9]";
-  
-  // Color del botón de tema adaptable
-  const themeButtonColor = isInVision 
-    ? (isDarkTheme ? "bg-[#111111]/80" : "bg-[#FAFAFA]/80")
-    : (isDarkTheme ? "bg-[#FDCEDF]/80" : "bg-[#FF8FAB]/80");
 
   return (
     <main className={`relative flex flex-col overflow-x-hidden transition-colors duration-500 ${isDarkTheme ? "bg-[#09090B]" : "bg-[#FAFAFA]"}`}>
+
+      <style>{`
+        ::selection {
+          background-color: ${isDarkTheme ? '#fdcedf86' : '#ff8fab7e'};
+          color: ${isDarkTheme ? '#FDCEDF' : '#FF8FAB'};
+        }
+      `}</style>
+
       <Preloader />
 
-      {/* NAVBAR */}
-      <motion.nav 
-        className="fixed top-0 left-0 w-full pt-4 px-6 md:pt-6 md:px-10 z-50 grid grid-cols-3 items-start text-base md:text-[1.5rem] tracking-[0.2em] font-bold bg-transparent pointer-events-auto transition-colors duration-500"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.8 }} 
-      >
-        <div className="flex justify-start tracking-tighter">
-            <ScrambleLink href="#" onClick={handleLogoClick} isDarkTheme={isDarkTheme} forceDarkText={isInVision}>brisadsx</ScrambleLink>
-        </div>
-        <div className="flex justify-start items-center tracking-tighter relative">
-            <button onClick={toggleTheme} className={`absolute -left-[40px] w-3.5 h-3.5 hover:rotate-90 transition-all duration-500 ${themeButtonColor}`} aria-label="Alternar tema oscuro/claro" />
-            <div className="ml-[190px]">
-                <ScrambleLink href="#" isDarkTheme={isDarkTheme} forceDarkText={isInVision}>about</ScrambleLink>
-            </div>
-        </div>
-        <div className="flex justify-end gap-4 md:gap-8 tracking-tighter">
-          <ScrambleLink href="https://www.linkedin.com/in/brisa-gabriela/" target="_blank" underline isDarkTheme={isDarkTheme} forceDarkText={isInVision}>in</ScrambleLink>
-          <ScrambleLink href="https://github.com/brisadsx" target="_blank" underline isDarkTheme={isDarkTheme} forceDarkText={isInVision}>git</ScrambleLink>
-          <ScrambleLink href="mailto:brisadsx@gmail.com" underline isDarkTheme={isDarkTheme} forceDarkText={isInVision}>mail</ScrambleLink>
-        </div>
-      </motion.nav>
+      {/* 🔥 Usamos el nuevo Navbar */}
+      <Navbar onLogoClick={handleLogoClick} isInVision={isInVision} />
 
       <motion.div 
         className={`fixed inset-0 z-40 w-screen h-screen ${heroBgColor} flex items-center origin-left`}
@@ -177,8 +109,13 @@ export default function Home() {
               Gabriela
             </h1>
             
-            <div className="mt-8 text-sm md:text-lg lowercase">
-              <ScrambleLink href="#" onClick={handleCtaClick} underline isDarkTheme={isDarkTheme}>
+            <div className="mt-8 text-base md:text-[1.25rem] tracking-tight lowercase">
+              <ScrambleLink 
+                href="#" 
+                onClick={handleCtaClick} 
+                underline 
+                isDarkTheme={isDarkTheme}
+              >
                 hi, click here to see more
               </ScrambleLink>
             </div>

@@ -3,6 +3,13 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "../context/ThemeContext"; 
 
+export const metadata: Metadata = {
+  title: {
+    default: "Brisa Gabriela - Creative Technologist",
+    template: "%s - Brisa Gabriela" 
+  },
+  description: "Creative Technologist focusing on interactive digital experiences.",
+};
 
 const helveticaNeue = localFont({
   src: "./fonts/helvetica-neue.otf", 
@@ -12,10 +19,6 @@ const helveticaNeue = localFont({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Brisa Gabriela | Creative Technologist",
-  description: "Portfolio of Brisa Gabriela",
-};
 
 export default function RootLayout({
   children,
@@ -23,7 +26,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Aplicamos la variable al HTML
     <html lang="es" className={`${helveticaNeue.variable}`}>
       <body className="antialiased">
         <ThemeProvider>
