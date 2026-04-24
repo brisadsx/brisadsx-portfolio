@@ -35,28 +35,28 @@ export default function PrivacyPage() {
 
           <div className="flex flex-col gap-10">
             <section>
-              <h2 className={`text-xl md:text-2xl font-medium mb-4 ${textColor}`}>1. Information Collection</h2>
+              <h2 className={`text-xl md:text-2xl font-medium mb-4 ${textColor}`}>Information Collection</h2>
               <p className={`text-base md:text-lg leading-relaxed font-medium ${mutedTextColor}`}>
                 When you fill out the contact form on this website, I collect your name, email address, and any details you provide about your project. This is the only personal data collected through this site.
               </p>
             </section>
 
             <section>
-              <h2 className={`text-xl md:text-2xl font-medium mb-4 ${textColor}`}>2. Use of Information</h2>
+              <h2 className={`text-xl md:text-2xl font-medium mb-4 ${textColor}`}>Use of Information</h2>
               <p className={`text-base md:text-lg leading-relaxed font-medium ${mutedTextColor}`}>
                 The information collected is used solely to respond to your inquiries, provide accurate project estimates, and schedule potential meetings. You will not be subscribed to any newsletters unless explicitly requested.
               </p>
             </section>
 
             <section>
-              <h2 className={`text-xl md:text-2xl font-medium mb-4 ${textColor}`}>3. Data Protection</h2>
+              <h2 className={`text-xl md:text-2xl font-medium mb-4 ${textColor}`}>Data Protection</h2>
               <p className={`text-base md:text-lg leading-relaxed font-medium ${mutedTextColor}`}>
                 I value your privacy. Your personal information is kept confidential and is not shared, sold, traded, or rented to any third parties or external agencies.
               </p>
             </section>
 
             <section>
-              <h2 className={`text-xl md:text-2xl font-medium mb-4 ${textColor}`}>4. Contact</h2>
+              <h2 className={`text-xl md:text-2xl font-medium mb-4 ${textColor}`}>Contact</h2>
               <p className={`text-base md:text-lg leading-relaxed font-medium ${mutedTextColor}`}>
                 If you have any questions about this privacy policy or the data collected, please contact me directly at <a href="mailto:brisadsx@gmail.com" className={`underline underline-offset-4 transition-colors ${isDarkTheme ? "hover:text-[#FDCEDF]" : "hover:text-[#FF8FAB]"}`}>brisadsx@gmail.com</a>.
               </p>

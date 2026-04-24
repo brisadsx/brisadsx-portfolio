@@ -24,6 +24,16 @@ export default function Home() {
     return () => { document.body.style.overflow = "auto"; };
   }, [isHeroActive]);
 
+  useEffect(() => {
+    if (isHeroActive) {
+      document.title = "Brisa Gabriela - Creative Technologist";
+    } else if (isInVision) {
+      document.title = "Services - Brisa Gabriela";
+    } else {
+      document.title = "Works - Brisa Gabriela";
+    }
+  }, [isHeroActive, isInVision]);
+
   const handleCtaClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsHeroActive(false); 

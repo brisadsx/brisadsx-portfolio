@@ -2,7 +2,8 @@
 
 import { useTheme } from "../../context/ThemeContext";
 import Navbar from "../../components/Navbar";
-import Link from "next/link"; // 🔥 El import tiene que estar acá arriba
+import Link from "next/link"; 
+import Preloader from "../../components/Preloader";
 
 export default function ContactPage() {
   const { isDarkTheme } = useTheme();
@@ -28,6 +29,8 @@ export default function ContactPage() {
           color: ${isDarkTheme ? '#FDCEDF' : '#FF8FAB'};
         }
       `}</style>
+
+      <Preloader text="Contact" />
 
       <Navbar />
 
@@ -191,10 +194,10 @@ export default function ContactPage() {
                 Contact Details
               </h4>
               <a 
-                href="mailto:brisadsx@gmail.com" 
+                href="mailto:contact@brisadsx.com" 
                 className={`text-lg md:text-xl font-medium transition-colors duration-300 hover:underline underline-offset-4 ${textColor} ${hoverTextColor}`}
               >
-                brisadsx@gmail.com
+                contact@brisadsx.com
               </a>
             </div>
 
