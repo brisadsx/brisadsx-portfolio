@@ -102,7 +102,7 @@ export default function ContactPage() {
         
         {/* Título Principal */}
         <div className="w-full mb-16 md:mb-24">
-          <h1 className={`text-[15vw] md:text-[8vw] font-medium leading-[0.9] tracking-tighter ${textColor}`}>
+          <h1 className={`text-[13vw] md:text-[6vw] font-medium leading-[0.9] tracking-tighter ${textColor}`}>
             Let&apos;s start a <br />project together
           </h1>
         </div>
